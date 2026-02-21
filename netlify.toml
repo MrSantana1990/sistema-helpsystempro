@@ -1,0 +1,28 @@
+[build]
+  publish = "."
+  command = "echo \"No build step (static deploy)\""
+
+[[redirects]]
+  from = "/assets/logo-B3OpsQUS.png"
+  to = "/logo-b3opsqus.png"
+  status = 200
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/"
+  to = "/tools/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tools/*"
+  to = "/tools/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

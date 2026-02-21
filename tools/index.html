@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ferramentas | HelpSystem Pro</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/tools/common.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="brand" href="/">
+          <img
+            class="brand-logo"
+            src="/assets/logo-B3OpsQUS.png"
+            alt="HelpSystem Pro"
+            loading="eager"
+            decoding="async"
+            onerror="this.onerror=null;this.src='/logo-b3opsqus.png';"
+          />
+          <div>
+            <strong>HelpSystem Pro</strong><br />
+            <span class="muted">Ferramentas (simples e rápidas)</span>
+          </div>
+        </a>
+        <div class="nav">
+          <a class="pill" href="/">Voltar ao site</a>
+        </div>
+      </div>
+
+      <div>
+        <h1 class="title">Ferramentas</h1>
+        <p class="subtitle">Sem rolagem infinita: use as abas abaixo.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Ferramentas">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="p-format" id="t-format" data-tab="format">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10"/><path d="M17 4l-5 13-5-13"/>
+          </svg>
+          Formatar
+        </button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-api" id="t-api" data-tab="api">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/><path d="M20 6 14 12"/>
+          </svg>
+          API/SOAP
+        </button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-ip" id="t-ip" data-tab="ip">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/>
+          </svg>
+          Meu IP
+        </button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-speed" id="t-speed" data-tab="speed">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 13a8 8 0 1 0-16 0"/><path d="M12 13l3-3"/>
+          </svg>
+          Velocidade
+        </button>
+      </div>
+
+      <div class="main" id="main">
+        <div class="panel active" id="p-format" role="tabpanel" aria-labelledby="t-format">
+          <div class="card">
+            <h2>Formatador (JSON / XML)</h2>
+            <p class="muted" style="margin: 0 0 10px">
+              Cole o conteúdo à esquerda e veja o resultado à direita. (Autodetecta JSON/XML)
+            </p>
+            <div class="tri">
+              <div class="card" style="margin:0">
+                <h2 style="margin-bottom:6px">Entrada</h2>
+                <textarea id="fmtIn" class="mono" placeholder='{"hello":"world"}'></textarea>
+                <div class="row" style="margin-top:10px">
+                  <button class="btn secondary" id="pasteIn">Colar</button>
+                  <button class="btn danger" id="clearFmt">Limpar</button>
+                </div>
+                <div id="fmtStatus" class="footer"></div>
+              </div>
+              <div class="actions">
+                <label>Tipo</label>
+                <select id="fmtType">
+                  <option value="auto" selected>Auto</option>
+                  <option value="json">JSON</option>
+                  <option value="xml">XML</option>
+                </select>
+                <button class="btn" id="fmtPretty">Formatar</button>
+                <button class="btn secondary" id="fmtMin">Minificar</button>
+                <button class="btn secondary" id="fmtValidate">Validar</button>
+                <button class="btn secondary" id="fmtB64Json">Base64 → JSON</button>
+                <button class="btn secondary" id="copyOut">Copiar saída</button>
+                <div class="hint">Dica: para SOAP, use na aba API/SOAP.</div>
+              </div>
+              <div class="card" style="margin:0">
+                <h2 style="margin-bottom:6px">Saída</h2>
+                <textarea id="fmtOut" class="mono" readonly></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="p-api" role="tabpanel" aria-labelledby="t-api">
+          <div class="card">
+          <h2>API / SOAP (estilo SoapUI, mas simples)</h2>
+          <p class="muted">
+            Cole a URL, headers e o body. Se o navegador bloquear por CORS, você ainda tem o cURL pronto.
+          </p>
+
+          <div class="kv">
+            <div>
+              <label>Tipo</label>
+              <select id="mode">
+                <option value="rest">REST (JSON)</option>
+                <option value="soap">SOAP (XML)</option>
+              </select>
+            </div>
+            <div>
+              <label>Método</label>
+              <select id="method">
+                <option>GET</option>
+                <option selected>POST</option>
+                <option>PUT</option>
+                <option>PATCH</option>
+                <option>DELETE</option>
+              </select>
+            </div>
+            <div style="grid-column: 1 / -1">
+              <label>URL</label>
+              <input id="url" placeholder="https://api.exemplo.com/endpoint" />
+            </div>
+            <div>
+              <label>Headers (JSON)</label>
+              <textarea id="headers" class="mono" placeholder='{"content-type":"application/json"}'></textarea>
+            </div>
+            <div>
+              <label id="bodyLabel">Body (JSON)</label>
+              <textarea id="body" class="mono" placeholder='{"hello":"world"}'></textarea>
+            </div>
+          </div>
+
+          <div id="soapVarsWrap" class="card" style="margin: 12px 0 0; display: none">
+            <h2 style="margin-bottom: 6px">Campos do XML ({{chave}})</h2>
+            <p class="muted" style="margin: 0 0 10px">
+              Dica: no XML, use placeholders como <span class="mono">{{name}}</span>. Eu detecto e monto os inputs.
+            </p>
+            <div id="soapVars" class="kv"></div>
+            <div class="row" style="margin-top: 10px">
+              <button class="btn secondary" id="detectVars">Detectar campos</button>
+              <button class="btn secondary" id="copyRendered" disabled>Copiar XML final</button>
+            </div>
+            <label>XML final (preview)</label>
+            <textarea id="rendered" class="mono" readonly></textarea>
+          </div>
+
+          <div class="row" style="margin-top: 10px">
+            <button class="btn" id="send">Enviar</button>
+            <button class="btn secondary" id="loadSample">Carregar exemplo</button>
+            <button class="btn secondary" id="copyCmd">Copiar comando</button>
+            <button class="btn danger" id="clearApi">Limpar</button>
+          </div>
+
+          <div class="split" style="margin-top: 12px">
+            <div class="card" style="margin: 0">
+              <div class="row" style="margin-bottom: 8px">
+                <h2 style="margin: 0">Comando</h2>
+                <select id="cmdType" style="max-width: 220px">
+                  <option value="powershell" selected>PowerShell (recomendado)</option>
+                  <option value="curl">cURL (bash)</option>
+                </select>
+              </div>
+              <textarea id="cmd" class="mono" readonly></textarea>
+            </div>
+            <div class="card" style="margin: 0">
+              <h2 style="margin-bottom: 6px">Resposta</h2>
+              <div class="kpi" id="respChips"></div>
+              <textarea id="resp" class="mono" readonly></textarea>
+              <div id="respNote" class="footer"></div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="panel" id="p-ip" role="tabpanel" aria-labelledby="t-ip">
+          <div class="card">
+            <h2>Meu IP</h2>
+            <div class="kpi" id="ipChips"></div>
+            <div class="hr"></div>
+            <div class="row">
+              <button class="btn" id="copyIp">Copiar IP</button>
+              <button class="btn secondary" id="reverseBtn" disabled>Reverse DNS</button>
+            </div>
+            <div id="reverseOut" class="footer"></div>
+          </div>
+        </div>
+
+        <div class="panel" id="p-speed" role="tabpanel" aria-labelledby="t-speed">
+          <div class="card">
+            <h2>Teste de velocidade (rápido)</h2>
+            <p class="muted">
+              Mede download em stream (sem plugins). O sistema escolhe automaticamente o melhor servidor.
+            </p>
+            <div class="kpi" id="speedChips"></div>
+            <div class="row" style="margin-top: 10px">
+              <button class="btn" id="runSpeed">Iniciar teste</button>
+            </div>
+            <div id="speedOut" class="footer"></div>
+            <div class="footer">
+              Dica: rode 2x e considere o maior valor (a primeira rodada “aquece” a conexão).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/tools/common.js"></script>
+    <script>
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      const panels = {
+        format: document.getElementById("p-format"),
+        api: document.getElementById("p-api"),
+        ip: document.getElementById("p-ip"),
+        speed: document.getElementById("p-speed"),
+      };
+
+      function setActiveTab(name) {
+        for (const t of tabs) {
+          const active = t.dataset.tab === name;
+          t.setAttribute("aria-selected", active ? "true" : "false");
+        }
+        for (const [k, p] of Object.entries(panels)) {
+          p.classList.toggle("active", k === name);
+        }
+        if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+      }
+
+      for (const t of tabs) {
+        t.addEventListener("click", () => setActiveTab(t.dataset.tab));
+      }
+
+      const ipChips = document.getElementById("ipChips");
+      const speedChips = document.getElementById("speedChips");
+      const speedOut = document.getElementById("speedOut");
+      const reverseBtn = document.getElementById("reverseBtn");
+      const reverseOut = document.getElementById("reverseOut");
+      const copyIpBtn = document.getElementById("copyIp");
+
+      const mode = $("mode");
+      const method = $("method");
+      const url = $("url");
+      const headers = $("headers");
+      const body = $("body");
+      const bodyLabel = document.getElementById("bodyLabel");
+      const cmdType = $("cmdType");
+      const cmd = $("cmd");
+      const resp = $("resp");
+      const respChips = document.getElementById("respChips");
+      const respNote = document.getElementById("respNote");
+      const soapVarsWrap = document.getElementById("soapVarsWrap");
+      const soapVars = document.getElementById("soapVars");
+      const rendered = document.getElementById("rendered");
+      const copyRenderedBtn = document.getElementById("copyRendered");
+
+      // Formatter
+      const fmtIn = $("fmtIn");
+      const fmtOut = $("fmtOut");
+      const fmtType = $("fmtType");
+      const fmtStatus = $("fmtStatus");
+
+      function fmtSetStatus(text, kind = "") {
+        fmtStatus.textContent = text;
+        fmtStatus.className = "footer " + kind;
+      }
+
+      function xmlMinify(text) {
+        return String(text || "").replace(/>\s+</g, "><").trim();
+      }
+
+      function xmlPretty(text) {
+        const t = String(text || "").trim();
+        const parsed = tryParseXml(t);
+        if (!parsed.ok) throw parsed.error;
+        const reg = /(>)(<)(\/*)/g;
+        const lines = xmlMinify(t).replace(reg, "$1\n$2$3").split("\n");
+        let pad = 0;
+        const out = [];
+        for (const line of lines) {
+          if (!line) continue;
+          if (/^<\/.+>/.test(line)) pad = Math.max(0, pad - 1);
+          out.push("  ".repeat(pad) + line);
+          if (/^<[^!?\/][^>]*[^\/]>$/.test(line)) pad++;
+        }
+        return out.join("\n");
+      }
+
+      function formatAuto(kind) {
+        const input = fmtIn.value || "";
+        const type = kind || fmtType.value;
+        try {
+          if (type === "json") {
+            const p = safeJsonParse(input);
+            if (!p.ok) throw p.error;
+            return { type: "json", out: JSON.stringify(p.value, null, 2) };
+          }
+          if (type === "xml") {
+            return { type: "xml", out: xmlPretty(input) };
+          }
+          // auto
+          const p = safeJsonParse(input);
+          if (p.ok) return { type: "json", out: JSON.stringify(p.value, null, 2) };
+          // try xml
+          return { type: "xml", out: xmlPretty(input) };
+        } catch (e) {
+          throw e;
+        }
+      }
+
+      function minifyAuto(kind) {
+        const input = fmtIn.value || "";
+        const type = kind || fmtType.value;
+        if (type === "json") {
+          const p = safeJsonParse(input);
+          if (!p.ok) throw p.error;
+          return { type: "json", out: JSON.stringify(p.value) };
+        }
+        if (type === "xml") {
+          const p = tryParseXml(input);
+          if (!p.ok) throw p.error;
+          return { type: "xml", out: xmlMinify(input) };
+        }
+        // auto
+        const p = safeJsonParse(input);
+        if (p.ok) return { type: "json", out: JSON.stringify(p.value) };
+        const x = tryParseXml(input);
+        if (!x.ok) throw new Error("Não parece JSON nem XML válido.");
+        return { type: "xml", out: xmlMinify(input) };
+      }
+
+      $("fmtPretty").addEventListener("click", () => {
+        try {
+          const r = formatAuto();
+          fmtOut.value = r.out;
+          fmtSetStatus(`OK: ${r.type.toUpperCase()} formatado.`, "ok");
+        } catch (e) {
+          fmtSetStatus("Erro: " + e.message, "bad");
+        }
+      });
+      $("fmtMin").addEventListener("click", () => {
+        try {
+          const r = minifyAuto();
+          fmtOut.value = r.out;
+          fmtSetStatus(`OK: ${r.type.toUpperCase()} minificado.`, "ok");
+        } catch (e) {
+          fmtSetStatus("Erro: " + e.message, "bad");
+        }
+      });
+      $("fmtValidate").addEventListener("click", () => {
+        try {
+          const input = fmtIn.value || "";
+          const type = fmtType.value;
+          if (type === "json") {
+            const p = safeJsonParse(input);
+            if (!p.ok) throw p.error;
+            fmtSetStatus("JSON válido.", "ok");
+            return;
+          }
+          if (type === "xml") {
+            const p = tryParseXml(input);
+            if (!p.ok) throw p.error;
+            fmtSetStatus("XML válido.", "ok");
+            return;
+          }
+          const pj = safeJsonParse(input);
+          if (pj.ok) return void fmtSetStatus("JSON válido. (auto)", "ok");
+          const px = tryParseXml(input);
+          if (px.ok) return void fmtSetStatus("XML válido. (auto)", "ok");
+          throw new Error("Não parece JSON nem XML válido.");
+        } catch (e) {
+          fmtSetStatus("Erro: " + e.message, "bad");
+        }
+      });
+      $("fmtB64Json").addEventListener("click", () => {
+        try {
+          const decoded = b64ToUtf8(fmtIn.value || "");
+          const p = safeJsonParse(decoded);
+          if (!p.ok) throw new Error("Base64 decodificou, mas não virou JSON.");
+          fmtOut.value = JSON.stringify(p.value, null, 2);
+          fmtSetStatus("OK: Base64 → JSON.", "ok");
+        } catch (e) {
+          fmtSetStatus("Erro: " + e.message, "bad");
+        }
+      });
+      $("copyOut").addEventListener("click", async () => {
+        await copyToClipboard(fmtOut.value || "");
+        fmtSetStatus("Copiado.", "ok");
+      });
+      $("pasteIn").addEventListener("click", async () => {
+        try {
+          const txt = await navigator.clipboard.readText();
+          fmtIn.value = txt;
+          fmtSetStatus("Colado do clipboard.", "ok");
+        } catch {
+          fmtSetStatus("Não consegui ler o clipboard (permissão do navegador).", "warn");
+        }
+      });
+      $("clearFmt").addEventListener("click", () => {
+        fmtIn.value = "";
+        fmtOut.value = "";
+        fmtSetStatus("");
+      });
+
+      function chip(text, kind = "") {
+        const el = document.createElement("div");
+        el.className = "chip " + kind;
+        el.textContent = text;
+        return el;
+      }
+
+      function setChips(container, list) {
+        container.innerHTML = "";
+        for (const item of list) container.appendChild(item);
+      }
+
+      function nowStr() {
+        return new Date().toLocaleString("pt-BR");
+      }
+
+      async function loadIp() {
+        setChips(ipChips, [chip("Carregando IP...", "muted")]);
+        try {
+          const { text } = await fetchText("https://api.ipify.org?format=json", { cache: "no-store" });
+          const parsed = safeJsonParse(text);
+          if (!parsed.ok) throw new Error("Falha ao ler IP.");
+          const ip = parsed.value.ip;
+          window.__HSP_IP__ = ip;
+          const list = [chip(`IP: ${ip}`, "ok"), chip(`Data: ${nowStr()}`, "muted")];
+          if (isProbablyIpv4(ip)) reverseBtn.disabled = false;
+          setChips(ipChips, list);
+        } catch (e) {
+          setChips(ipChips, [chip("Não foi possível obter o IP.", "bad")]);
+        }
+      }
+
+      async function reverseDns() {
+        const ip = window.__HSP_IP__;
+        if (!ip || !isProbablyIpv4(ip)) return;
+        reverseOut.textContent = "Consultando reverse DNS...";
+        try {
+          const name = reverseIpv4(ip);
+          const { text } = await fetchText(
+            `https://dns.google/resolve?name=${encodeURIComponent(name)}&type=PTR`,
+            { cache: "no-store" },
+          );
+          const parsed = safeJsonParse(text);
+          if (!parsed.ok) throw new Error("Resposta inválida.");
+          const ans = parsed.value.Answer || [];
+          const ptr = ans.find((a) => a.type === 12)?.data;
+          reverseOut.textContent = ptr ? `PTR: ${ptr}` : "Sem PTR (ou não encontrado).";
+        } catch (e) {
+          reverseOut.textContent = "Falha ao consultar reverse DNS.";
+        }
+      }
+
+      copyIpBtn.addEventListener("click", async () => {
+        const ip = window.__HSP_IP__ || "";
+        await copyToClipboard(ip);
+      });
+      reverseBtn.addEventListener("click", reverseDns);
+
+      const SPEED_DEFAULT_CONN = 4;
+      const SPEED_DURATION_MS = 12000;
+      const SPEED_CF_URL = "https://speed.cloudflare.com/__down?bytes=25000000";
+
+      function speedFallbackUrl() {
+        // fallback same-origin (não depende de CORS, mas mede o CDN do próprio site)
+        return "/logo-b3opsqus.png";
+      }
+
+      async function streamDownloadOnce(url, abortSignal) {
+        const res = await fetch(url, { cache: "no-store", signal: abortSignal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.body) {
+          const buf = await res.arrayBuffer();
+          return buf.byteLength;
+        }
+        const reader = res.body.getReader();
+        let bytes = 0;
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          bytes += value.byteLength;
+        }
+        return bytes;
+      }
+
+      async function speedTest(durationMs) {
+        const conn = SPEED_DEFAULT_CONN;
+        const controller = new AbortController();
+
+        setChips(speedChips, [chip("Rodando...", "muted")]);
+        const startedAt = msNow();
+        let totalBytes = 0;
+        let finished = 0;
+        let base = SPEED_CF_URL;
+        let used = "Cloudflare";
+
+        const tick = setInterval(() => {
+          const elapsed = msNow() - startedAt;
+          const mbps = toMbps(totalBytes, elapsed);
+          speedOut.textContent = `Baixando... ${mbps.toFixed(1)} Mbps (${used})`;
+        }, 250);
+
+        const stopTimer = setTimeout(() => controller.abort(), durationMs);
+
+        async function worker(workerId) {
+          while (!controller.signal.aborted) {
+            try {
+              const u = base.includes("://") ? `${base}&t=${Date.now()}_${workerId}_${finished}` : `${base}?t=${Date.now()}_${workerId}_${finished}`;
+              const bytes = await streamDownloadOnce(u, controller.signal);
+              totalBytes += bytes;
+              finished++;
+            } catch (e) {
+              if (controller.signal.aborted) break;
+              throw e;
+            }
+          }
+        }
+
+        try {
+          // primeiro tenta Cloudflare; se falhar, tenta same-origin (sem opções para o usuário)
+          try {
+            await Promise.all(Array.from({ length: conn }, (_, i) => worker(i)));
+          } catch (e) {
+            // troca alvo e tenta novamente (se ainda houver tempo)
+            base = speedFallbackUrl();
+            used = "Este site";
+            totalBytes = 0;
+            finished = 0;
+            await Promise.all(Array.from({ length: conn }, (_, i) => worker(i)));
+          }
+        } catch (e) {
+          clearInterval(tick);
+          clearTimeout(stopTimer);
+          setChips(speedChips, [chip("Erro no teste", "bad")]);
+          speedOut.textContent = "Falha ao medir. Tente novamente.";
+          return;
+        } finally {
+          clearInterval(tick);
+          clearTimeout(stopTimer);
+        }
+
+        const elapsed = msNow() - startedAt;
+        const mbps = toMbps(totalBytes, elapsed);
+        const mb = (totalBytes / (1024 * 1024)).toFixed(2);
+        setChips(speedChips, [
+          chip(`Download: ${mbps.toFixed(1)} Mbps`, mbps >= 50 ? "ok" : mbps >= 15 ? "warn" : "bad"),
+          chip(`Dados: ${mb} MB`, "muted"),
+          chip(`Tempo: ${(elapsed / 1000).toFixed(1)}s`, "muted"),
+        ]);
+        speedOut.textContent = `Concluído (${used}).`;
+      }
+
+      document.getElementById("runSpeed").addEventListener("click", () => speedTest(SPEED_DURATION_MS));
+
+      function extractVars(template) {
+        const re = /{{\s*([a-zA-Z0-9_.:-]{1,64})\s*}}/g;
+        const vars = new Set();
+        let m;
+        while ((m = re.exec(template)) !== null) vars.add(m[1]);
+        return [...vars];
+      }
+
+      function renderTemplate(template, values) {
+        return template.replace(/{{\s*([a-zA-Z0-9_.:-]{1,64})\s*}}/g, (_, k) => {
+          const v = values[k];
+          return v == null ? "" : String(v);
+        });
+      }
+
+      const soapState = { values: {} };
+
+      function syncSoapUi() {
+        const isSoap = mode.value === "soap";
+        soapVarsWrap.style.display = isSoap ? "block" : "none";
+        if (!isSoap) return;
+
+        const vars = extractVars(body.value || "");
+        const old = soapState.values || {};
+        const next = {};
+        for (const k of vars) next[k] = old[k] ?? "";
+        soapState.values = next;
+
+        soapVars.innerHTML = "";
+        if (vars.length === 0) {
+          soapVars.appendChild(chip("Nenhum placeholder encontrado no XML. (Ex: {{token}})", "muted"));
+          rendered.value = body.value || "";
+          copyRenderedBtn.disabled = !(rendered.value || "").trim();
+          return;
+        }
+
+        for (const k of vars) {
+          const wrap = document.createElement("div");
+          const lab = document.createElement("label");
+          lab.textContent = k;
+          const inp = document.createElement("input");
+          inp.placeholder = `valor para {{${k}}}`;
+          inp.value = soapState.values[k];
+          inp.addEventListener("input", () => {
+            soapState.values[k] = inp.value;
+            updateRendered();
+            buildCommand();
+          });
+          wrap.appendChild(lab);
+          wrap.appendChild(inp);
+          soapVars.appendChild(wrap);
+        }
+
+        updateRendered();
+      }
+
+      function updateRendered() {
+        const tpl = body.value || "";
+        rendered.value = renderTemplate(tpl, soapState.values || {});
+        copyRenderedBtn.disabled = !(rendered.value || "").trim();
+      }
+
+      function updateModeUi() {
+        const m = mode.value;
+        if (m === "soap") {
+          bodyLabel.textContent = "Body (XML)";
+          if (["GET", "HEAD"].includes((method.value || "").toUpperCase())) {
+            method.value = "POST";
+          }
+          const headersObj = safeJsonParse(headers.value || "{}");
+          if (headersObj.ok) {
+            const h = headersObj.value || {};
+            if (!h["content-type"]) h["content-type"] = "text/xml; charset=utf-8";
+            headers.value = JSON.stringify(h, null, 2);
+          }
+          const cur = (body.value || "").trim();
+          const looksJson = cur.startsWith("{") || cur.startsWith("[");
+          if (!cur || (looksJson && !cur.includes("<"))) {
+            body.value =
+              `<?xml version="1.0" encoding="utf-8"?>\n` +
+              `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n` +
+              `  <soap:Body>\n` +
+              `    <Hello xmlns="http://tempuri.org/">\n` +
+              `      <name>{{name}}</name>\n` +
+              `    </Hello>\n` +
+              `  </soap:Body>\n` +
+              `</soap:Envelope>\n`;
+          }
+        } else {
+          bodyLabel.textContent = "Body (JSON)";
+          const cur = (body.value || "").trim();
+          const looksXml = cur.startsWith("<");
+          if (!cur || looksXml) body.value = `{"hello":"world"}`;
+        }
+        syncSoapUi();
+        buildCommand();
+      }
+
+      function normalizeHeaders() {
+        const parsed = safeJsonParse(headers.value || "{}");
+        if (!parsed.ok) throw new Error("Headers inválidos (precisa ser JSON).");
+        const obj = parsed.value || {};
+        const out = {};
+        for (const [k, v] of Object.entries(obj)) out[String(k).toLowerCase()] = String(v);
+        return out;
+      }
+
+      function escapeForSingleQuotes(str) {
+        return String(str).replace(/'/g, `'\"'\"'`);
+      }
+
+      function buildCommand() {
+        const m = (method.value || "GET").toUpperCase();
+        const u = (url.value || "").trim();
+        let h = {};
+        try { h = normalizeHeaders(); } catch { h = {}; }
+        const isBody = !["GET", "HEAD"].includes(m);
+        const raw = isBody ? (body.value || "") : "";
+        const data =
+          mode.value === "soap"
+            ? renderTemplate(raw, soapState.values || {})
+            : raw;
+
+        if (cmdType.value === "curl") {
+          const parts = ["curl", "-sS", "-X", m];
+          for (const [k, v] of Object.entries(h)) {
+            parts.push("-H", `'${escapeForSingleQuotes(k + ": " + v)}'`);
+          }
+          if (isBody && data.trim()) {
+            const oneLine = data.replace(/\r?\n/g, "\\n");
+            parts.push("--data-raw", `'${escapeForSingleQuotes(oneLine)}'`);
+          }
+          parts.push(`'${escapeForSingleQuotes(u)}'`);
+          cmd.value = parts.join(" ");
+          return;
+        }
+
+        const headerLines = Object.entries(h).map(([k, v]) => `  '${k}' = '${String(v).replace(/'/g, "''")}'`).join("\n");
+        const psHeaders =
+          Object.keys(h).length === 0
+            ? "$headers = @{}"
+            : `$headers = @{\n${headerLines}\n}`;
+
+        const bodyHere =
+          isBody && data.trim()
+            ? `$body = @'\n${data.replace(/\r\n/g, "\n")}\n'@`
+            : "$body = $null";
+
+        const inv =
+          isBody && data.trim()
+            ? (mode.value === "soap"
+                ? `Invoke-WebRequest -Method ${m} -Uri '${u.replace(/'/g, "''")}' -Headers $headers -Body $body | Select-Object -ExpandProperty Content`
+                : `Invoke-RestMethod -Method ${m} -Uri '${u.replace(/'/g, "''")}' -Headers $headers -Body $body`)
+            : (mode.value === "soap"
+                ? `Invoke-WebRequest -Method ${m} -Uri '${u.replace(/'/g, "''")}' -Headers $headers | Select-Object -ExpandProperty Content`
+                : `Invoke-RestMethod -Method ${m} -Uri '${u.replace(/'/g, "''")}' -Headers $headers`);
+
+        cmd.value = `${psHeaders}\n\n${bodyHere}\n\n${inv}`;
+      }
+
+      async function sendReq() {
+        resp.value = "";
+        respChips.innerHTML = "";
+        respNote.textContent = "";
+        buildCommand();
+
+        const u = (url.value || "").trim();
+        if (!u) {
+          respNote.textContent = "URL é obrigatória.";
+          return;
+        }
+        let h;
+        try {
+          h = normalizeHeaders();
+        } catch (e) {
+          respNote.textContent = e.message;
+          return;
+        }
+
+        const m = (method.value || "POST").toUpperCase();
+        const start = msNow();
+        try {
+          const requestBody =
+            ["GET", "HEAD"].includes(m)
+              ? undefined
+              : (mode.value === "soap" ? (rendered.value || "") : (body.value || ""));
+          const res = await fetch(u, {
+            method: m,
+            headers: h,
+            body: requestBody,
+          });
+          const txt = await res.text();
+          const dt = msNow() - start;
+          resp.value = txt;
+          setChips(respChips, [chip(`HTTP ${res.status}`, res.ok ? "ok" : "bad"), chip(`${Math.round(dt)}ms`, "muted")]);
+          if (!res.ok) respNote.textContent = "Resposta com erro HTTP (veja o body).";
+        } catch (e) {
+          resp.value = "";
+          setChips(respChips, [chip("Falha de rede/CORS", "bad")]);
+          respNote.textContent =
+            "O navegador bloqueou (CORS) ou não foi possível conectar. Use o cURL acima (ele funciona fora do navegador).";
+        }
+      }
+
+      document.getElementById("send").addEventListener("click", sendReq);
+      document.getElementById("copyCmd").addEventListener("click", async () => {
+        buildCommand();
+        await copyToClipboard(cmd.value || "");
+      });
+      document.getElementById("detectVars").addEventListener("click", () => {
+        syncSoapUi();
+        buildCommand();
+      });
+      copyRenderedBtn.addEventListener("click", async () => {
+        await copyToClipboard(rendered.value || "");
+      });
+      document.getElementById("clearApi").addEventListener("click", () => {
+        url.value = "";
+        headers.value = "";
+        body.value = "";
+        cmd.value = "";
+        rendered.value = "";
+        soapVars.innerHTML = "";
+        resp.value = "";
+        respNote.textContent = "";
+        respChips.innerHTML = "";
+      });
+      document.getElementById("loadSample").addEventListener("click", () => {
+        if (mode.value === "soap") {
+          url.value = "https://example.com/soap-endpoint";
+          headers.value = JSON.stringify({ "content-type": "text/xml; charset=utf-8" }, null, 2);
+          body.value =
+            `<?xml version="1.0" encoding="utf-8"?>\n` +
+            `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n` +
+            `  <soap:Body>\n` +
+            `    <GetCustomer xmlns="http://tempuri.org/">\n` +
+            `      <token>{{token}}</token>\n` +
+            `      <customerId>{{customerId}}</customerId>\n` +
+            `    </GetCustomer>\n` +
+            `  </soap:Body>\n` +
+            `</soap:Envelope>\n`;
+        } else {
+          url.value = "https://jsonplaceholder.typicode.com/posts";
+          headers.value = JSON.stringify({ "content-type": "application/json" }, null, 2);
+          body.value = JSON.stringify({ hello: "world" }, null, 2);
+        }
+        syncSoapUi();
+        buildCommand();
+      });
+
+      mode.addEventListener("change", updateModeUi);
+      cmdType.addEventListener("change", buildCommand);
+      method.addEventListener("change", buildCommand);
+      url.addEventListener("input", buildCommand);
+      headers.addEventListener("input", buildCommand);
+      body.addEventListener("input", () => {
+        syncSoapUi();
+        buildCommand();
+      });
+
+      loadIp();
+      updateModeUi();
+      const initialTab = (location.hash || "").replace("#", "");
+      setActiveTab(panels[initialTab] ? initialTab : "format");
+    </script>
+  </body>
+</html>

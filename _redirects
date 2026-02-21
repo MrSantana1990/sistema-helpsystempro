@@ -1,0 +1,5 @@
+/assets/logo-B3OpsQUS.png /logo-b3opsqus.png 200
+/tools /tools/index.html 200
+/tools/ /tools/index.html 200
+/tools/* /tools/index.html 200
+/* /index.html 200

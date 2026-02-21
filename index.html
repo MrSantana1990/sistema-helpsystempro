@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rodolfo Santana - DBA Sênior & Especialista em Sustentação N4 | HelpSystem Pro</title>
+    <meta name="description" content="DBA Sênior especialista em sustentação de sistemas críticos N4, infraestrutura cloud Azure/AWS, banco de dados SQL Server, PostgreSQL e soluções enterprise. Otimização de performance, monitoramento 24/7 e automação de processos." />
+    <meta name="keywords" content="DBA Sênior, Sustentação N4, Azure, AWS, SQL Server, PostgreSQL, Infraestrutura, Cloud, Monitoramento, DevOps, Banco de Dados, Técnico N4, Campinas" />
+    <meta name="author" content="Rodolfo Santana" />
+    <meta property="og:title" content="Rodolfo Santana - DBA Sênior & Especialista em Sustentação N4" />
+    <meta property="og:description" content="Especialista em soluções tecnológicas enterprise com foco em sustentação de sistemas críticos, otimização de banco de dados e infraestrutura cloud." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://helpsystempro.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rodolfo Santana - DBA Sênior & Especialista em Sustentação N4" />
+    <meta name="twitter:description" content="Especialista em soluções tecnológicas enterprise com foco em sustentação de sistemas críticos, otimização de banco de dados e infraestrutura cloud." />
+    <script type="module" crossorigin src="/index-gfcmobev.js"></script>
+    <link rel="stylesheet" crossorigin href="/index-dvhyc5uy.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        const LABELS = ["Home", "Sobre", "Projetos", "Contato"];
+        const TOOLS_LABEL = "Ferramentas";
+        const TOOLS_SVG =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
+          'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6.6 6.6a2 2 0 1 0 2.8 2.8l6.6-6.6a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.8-2.8z"/>' +
+          '</svg>';
+
+        function norm(text) {
+          return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
+        }
+
+        function hasLabel(el, label) {
+          return el && (el.tagName === "A" || el.tagName === "BUTTON") && norm(el.textContent) === norm(label);
+        }
+
+        function findClickableByLabel(label) {
+          const all = document.querySelectorAll("a,button");
+          for (const el of all) if (hasLabel(el, label)) return el;
+          return null;
+        }
+
+        function containerHasAllLabels(container) {
+          const items = container.querySelectorAll("a,button");
+          return LABELS.every((l) => {
+            for (const it of items) if (hasLabel(it, l)) return true;
+            return false;
+          });
+        }
+
+        function findNavContainer() {
+          const home = findClickableByLabel("Home");
+          if (!home) return null;
+          let cur = home.parentElement;
+          for (let i = 0; i < 6 && cur; i++) {
+            if (containerHasAllLabels(cur)) return cur;
+            cur = cur.parentElement;
+          }
+          return null;
+        }
+
+        function alreadyInjected(container) {
+          return !!container.querySelector('[data-hsp-tools="1"]');
+        }
+
+        function replaceTextNode(root, from, to) {
+          const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const fromN = norm(from);
+          let n;
+          while ((n = w.nextNode())) {
+            if (norm(n.nodeValue) === fromN) n.nodeValue = to;
+          }
+        }
+
+        function inject() {
+          const container = findNavContainer();
+          if (!container || alreadyInjected(container)) return false;
+
+          const candidates = Array.from(container.querySelectorAll("a,button"));
+          const template =
+            candidates.find((el) => hasLabel(el, "Sobre")) ||
+            candidates.find((el) => hasLabel(el, "Projetos")) ||
+            candidates.find((el) => hasLabel(el, "Contato")) ||
+            candidates[0];
+          if (!template) return false;
+
+          const el = template.cloneNode(true);
+          el.setAttribute("data-hsp-tools", "1");
+          el.setAttribute("aria-label", TOOLS_LABEL);
+
+          replaceTextNode(el, template.textContent, TOOLS_LABEL);
+          // Fallback (caso texto não esteja em text nodes simples)
+          if (norm(el.textContent) !== norm(TOOLS_LABEL)) {
+            el.textContent = TOOLS_LABEL;
+          }
+
+          // Troca o ícone para "ferramentas" (se existir um SVG no item clonado)
+          const svg = el.querySelector("svg");
+          if (svg && svg.parentElement) {
+            const cls = svg.getAttribute("class");
+            svg.outerHTML = cls ? TOOLS_SVG.replace("<svg ", `<svg class="${cls}" `) : TOOLS_SVG;
+          } else {
+            // Se não tinha ícone, adiciona antes do texto
+            el.insertAdjacentHTML("afterbegin", TOOLS_SVG + " ");
+          }
+
+          if (el.tagName === "A") {
+            el.setAttribute("href", "/tools/");
+            el.setAttribute("target", "_self");
+          } else {
+            el.setAttribute("type", "button");
+          }
+
+          el.addEventListener("click", function (e) {
+            e.preventDefault();
+            window.location.assign("/tools/");
+          });
+
+          container.appendChild(el);
+          return true;
+        }
+
+        function boot() {
+          // tenta agora e também observa re-render do React
+          inject();
+          const obs = new MutationObserver(() => inject());
+          obs.observe(document.documentElement, { childList: true, subtree: true });
+          // para de observar depois de um tempo (evita overhead)
+          setTimeout(() => obs.disconnect(), 15000);
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", boot, { once: true });
+        } else {
+          boot();
+        }
+      })();
+    </script>
+  </body>
+</html>

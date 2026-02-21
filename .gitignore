@@ -1,0 +1,6 @@
+.netlify/
+.env
+.env.*
+*.log
+Thumbs.db
+Desktop.ini
