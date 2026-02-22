@@ -183,6 +183,12 @@
               <input id="useProxy" type="checkbox" style="width:auto; margin:0" />
               Usar proxy (CORS)
             </label>
+            <input
+              id="proxyToken"
+              class="mono"
+              style="max-width: 260px; display: none"
+              placeholder="Token (opcional)"
+            />
             <button class="btn secondary" id="loadSample">Carregar exemplo</button>
             <button class="btn secondary" id="copyCmd">Copiar comando</button>
             <button class="btn danger" id="clearApi">Limpar</button>
@@ -296,6 +302,7 @@
       const applyWsdlBtn = document.getElementById("applyWsdl");
       const wsdlStatus = document.getElementById("wsdlStatus");
       const useProxy = document.getElementById("useProxy");
+      const proxyToken = document.getElementById("proxyToken");
 
       // Formatter
       const fmtIn = $("fmtIn");
@@ -990,9 +997,12 @@
 
           // If proxy enabled, call Netlify function proxy.
           if (useProxy && useProxy.checked) {
+            const token = (proxyToken && proxyToken.value ? proxyToken.value.trim() : "") || "";
+            const proxyHeaders = { "content-type": "application/json" };
+            if (token) proxyHeaders["x-hsp-proxy-token"] = token;
             const proxyRes = await fetch("/api/proxy", {
               method: "POST",
-              headers: { "content-type": "application/json" },
+              headers: proxyHeaders,
               body: JSON.stringify({ url: u, method: m, headers: h, body: requestBody || "" }),
             });
             const proxyTxt = await proxyRes.text();
@@ -1091,8 +1101,29 @@
         buildCommand();
       });
 
+      function loadProxyUi() {
+        const saved = localStorage.getItem("hsp_use_proxy");
+        if (useProxy && saved != null) useProxy.checked = saved === "1";
+        const tok = localStorage.getItem("hsp_proxy_token") || "";
+        if (proxyToken) proxyToken.value = tok;
+        if (proxyToken) proxyToken.style.display = useProxy && useProxy.checked ? "block" : "none";
+      }
+
+      if (useProxy) {
+        useProxy.addEventListener("change", () => {
+          localStorage.setItem("hsp_use_proxy", useProxy.checked ? "1" : "0");
+          if (proxyToken) proxyToken.style.display = useProxy.checked ? "block" : "none";
+        });
+      }
+      if (proxyToken) {
+        proxyToken.addEventListener("input", () => {
+          localStorage.setItem("hsp_proxy_token", proxyToken.value || "");
+        });
+      }
+
       loadIp();
       updateModeUi();
+      loadProxyUi();
       const initialTab = (location.hash || "").replace("#", "");
       setActiveTab(panels[initialTab] ? initialTab : "format");
     </script>

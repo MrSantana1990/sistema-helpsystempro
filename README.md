@@ -48,6 +48,8 @@ Configuração no Netlify (Environment variables):
 - `PROXY_ALLOWLIST` (obrigatório): lista de hosts permitidos (ex: `jsonplaceholder.typicode.com,httpbin.org`)
 - `PROXY_TOKEN` (opcional): se definido, o proxy exige header `x-hsp-proxy-token`
 
+No frontend, o token pode ser preenchido no campo **“Token (opcional)”** ao habilitar **“Usar proxy (CORS)”** (ele fica salvo no `localStorage` do navegador).
+
 ## Limitações (normal para web)
 
 - Requests de API podem ser bloqueados por **CORS** no navegador. Por isso existe o botão de “copiar comando” (PowerShell/cURL).
