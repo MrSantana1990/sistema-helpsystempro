@@ -144,12 +144,28 @@
             <p class="muted" style="margin: 0 0 10px">
               Cole o WSDL para detectar endpoint/operations e gerar um XML base automaticamente.
             </p>
+            <div class="kv" style="margin-bottom: 10px">
+              <div style="grid-column: 1 / -1">
+                <label>URL do WSDL</label>
+                <input id="wsdlUrl" class="mono" placeholder="https://exemplo.com/service?wsdl" />
+              </div>
+              <div>
+                <button class="btn secondary" id="loadWsdlUrl">Carregar da URL</button>
+              </div>
+              <div>
+                <div class="hint">Se der CORS, marque “Usar proxy (CORS)”.</div>
+              </div>
+            </div>
             <textarea id="wsdl" class="mono" placeholder="Cole o WSDL (XML) aqui..."></textarea>
             <div class="row" style="margin-top: 10px">
               <button class="btn secondary" id="analyzeWsdl">Analisar WSDL</button>
               <button class="btn secondary" id="clearWsdl">Limpar</button>
             </div>
             <div class="kv" style="margin-top: 10px">
+              <div style="grid-column: 1 / -1">
+                <label>Endpoint</label>
+                <select id="wsdlEndpoint" disabled></select>
+              </div>
               <div style="grid-column: 1 / -1">
                 <label>Operação</label>
                 <select id="wsdlOp" disabled></select>
@@ -296,8 +312,11 @@
       const copyRenderedBtn = document.getElementById("copyRendered");
       const wsdlWrap = document.getElementById("wsdlWrap");
       const wsdl = document.getElementById("wsdl");
+      const wsdlUrl = document.getElementById("wsdlUrl");
+      const loadWsdlUrlBtn = document.getElementById("loadWsdlUrl");
       const analyzeWsdlBtn = document.getElementById("analyzeWsdl");
       const clearWsdlBtn = document.getElementById("clearWsdl");
+      const wsdlEndpoint = document.getElementById("wsdlEndpoint");
       const wsdlOp = document.getElementById("wsdlOp");
       const applyWsdlBtn = document.getElementById("applyWsdl");
       const wsdlStatus = document.getElementById("wsdlStatus");
@@ -719,7 +738,7 @@
       }
 
       // WSDL (best-effort): detect operations + soapAction + endpoint and generate a base envelope
-      const wsdlState = { ops: [] };
+      const wsdlState = { ops: [], endpoints: [] };
 
       function wsdlSetStatus(text, kind = "") {
         wsdlStatus.textContent = text || "";
@@ -743,14 +762,12 @@
         const defs = getFirstByLocalName(doc, "definitions") || doc.documentElement;
         const targetNamespace = (defs && defs.getAttribute("targetNamespace")) || "";
 
-        let endpoint = "";
+        const endpoints = [];
         for (const addr of getAllByLocalName(doc, "address")) {
           const loc = addr.getAttribute("location");
-          if (loc) {
-            endpoint = loc;
-            break;
-          }
+          if (loc && !endpoints.includes(loc)) endpoints.push(loc);
         }
+        const endpoint = endpoints[0] || "";
 
         const soapVersion = getAllByLocalName(doc, "binding").some((b) => String(b.namespaceURI || "").includes("soap12"))
           || getAllByLocalName(doc, "address").some((a) => String(a.namespaceURI || "").includes("soap12"))
@@ -802,11 +819,12 @@
             name,
             soapAction: actionByName.get(name) || "",
             endpoint,
+            endpoints,
             targetNamespace,
             soapVersion,
           }));
 
-        return { ops };
+        return { ops, endpoints };
       }
 
       function makeSoapEnvelope(op) {
@@ -837,7 +855,11 @@
       }
 
       function applyWsdlOp(op) {
-        if (op.endpoint) url.value = op.endpoint;
+        const chosen =
+          (wsdlEndpoint && !wsdlEndpoint.disabled && wsdlEndpoint.value ? wsdlEndpoint.value : "") ||
+          op.endpoint ||
+          "";
+        if (chosen) url.value = chosen;
         method.value = "POST";
         bodyLabel.textContent = "Body (XML)";
         body.value = makeSoapEnvelope(op);
@@ -860,6 +882,24 @@
 
       function refreshWsdlUi() {
         wsdlOp.innerHTML = "";
+        wsdlEndpoint.innerHTML = "";
+
+        const eps = wsdlState.endpoints || [];
+        if (eps.length) {
+          wsdlEndpoint.disabled = false;
+          for (const e of eps) {
+            const opt = document.createElement("option");
+            opt.value = e;
+            opt.textContent = e;
+            wsdlEndpoint.appendChild(opt);
+          }
+        } else {
+          wsdlEndpoint.disabled = true;
+          const opt = document.createElement("option");
+          opt.textContent = "Não detectado";
+          wsdlEndpoint.appendChild(opt);
+        }
+
         if (!wsdlState.ops.length) {
           wsdlOp.disabled = true;
           applyWsdlBtn.disabled = true;
@@ -882,10 +922,13 @@
         try {
           const r = parseWsdl(wsdl.value || "");
           wsdlState.ops = r.ops;
+          wsdlState.endpoints = r.endpoints || [];
           refreshWsdlUi();
-          wsdlSetStatus(`OK: ${r.ops.length} operação(ões) detectada(s).`, "ok");
+          const epMsg = wsdlState.endpoints.length ? ` • ${wsdlState.endpoints.length} endpoint(s)` : "";
+          wsdlSetStatus(`OK: ${r.ops.length} operação(ões) detectada(s)${epMsg}.`, "ok");
         } catch (e) {
           wsdlState.ops = [];
+          wsdlState.endpoints = [];
           refreshWsdlUi();
           wsdlSetStatus("Erro: " + e.message, "bad");
         }
@@ -893,7 +936,9 @@
 
       clearWsdlBtn.addEventListener("click", () => {
         wsdl.value = "";
+        if (wsdlUrl) wsdlUrl.value = "";
         wsdlState.ops = [];
+        wsdlState.endpoints = [];
         refreshWsdlUi();
         wsdlSetStatus("");
       });
@@ -904,6 +949,52 @@
         if (!op) return;
         applyWsdlOp(op);
         wsdlSetStatus(`Aplicado: ${op.name}`, "ok");
+      });
+
+      async function fetchViaProxy(targetUrl) {
+        const token = (proxyToken && proxyToken.value ? proxyToken.value.trim() : "") || "";
+        const proxyHeaders = { "content-type": "application/json" };
+        if (token) proxyHeaders["x-hsp-proxy-token"] = token;
+        const proxyRes = await fetch("/api/proxy", {
+          method: "POST",
+          headers: proxyHeaders,
+          body: JSON.stringify({ url: targetUrl, method: "GET", headers: {}, body: "" }),
+        });
+        const proxyTxt = await proxyRes.text();
+        const parsed = safeJsonParse(proxyTxt);
+        if (!parsed.ok) throw new Error("Proxy: resposta inválida.");
+        if (!parsed.value.ok) throw new Error(parsed.value.error || "Proxy: falha.");
+        return String(parsed.value.response?.body || "");
+      }
+
+      loadWsdlUrlBtn.addEventListener("click", async () => {
+        const target = (wsdlUrl && wsdlUrl.value ? wsdlUrl.value.trim() : "") || "";
+        if (!target) {
+          wsdlSetStatus("Informe a URL do WSDL.", "warn");
+          return;
+        }
+        wsdlSetStatus("Carregando WSDL...", "muted");
+        try {
+          let text = "";
+          // try direct (if CORS permits)
+          try {
+            const res = await fetch(target, { cache: "no-store" });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            text = await res.text();
+          } catch (e) {
+            // fallback: proxy (for published site)
+            if (useProxy && useProxy.checked) {
+              text = await fetchViaProxy(target);
+            } else {
+              throw new Error("Bloqueado por CORS. Marque 'Usar proxy (CORS)' ou cole o WSDL manualmente.");
+            }
+          }
+          wsdl.value = text;
+          analyzeWsdlBtn.click();
+          wsdlSetStatus("WSDL carregado e analisado.", "ok");
+        } catch (e) {
+          wsdlSetStatus("Erro: " + e.message, "bad");
+        }
       });
 
       function normalizeHeaders() {
