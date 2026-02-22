@@ -32,6 +32,22 @@ Dentro de `/tools/` você tem abas:
 - O sistema **não salva** seu JSON/XML nem seus requests em servidor.
 - Alguns recursos usam serviços públicos (ex: “Meu IP” e reverse DNS) para funcionar.
 
+### API/SOAP e CORS
+
+No navegador, muitas APIs (principalmente SOAP/enterprise) bloqueiam chamadas diretas por **CORS**.
+
+Por isso o sistema tem duas alternativas:
+
+- **Copiar comando** (PowerShell/cURL) e executar fora do navegador.
+- **Proxy (Netlify Function)**: quando habilitado na aba API/SOAP, o site chama uma function do Netlify que faz a requisição por você.
+
+> Segurança: o proxy é **deny-by-default** e precisa de allowlist.
+
+Configuração no Netlify (Environment variables):
+
+- `PROXY_ALLOWLIST` (obrigatório): lista de hosts permitidos (ex: `jsonplaceholder.typicode.com,httpbin.org`)
+- `PROXY_TOKEN` (opcional): se definido, o proxy exige header `x-hsp-proxy-token`
+
 ## Limitações (normal para web)
 
 - Requests de API podem ser bloqueados por **CORS** no navegador. Por isso existe o botão de “copiar comando” (PowerShell/cURL).

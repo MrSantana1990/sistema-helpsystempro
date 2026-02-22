@@ -179,6 +179,10 @@
 
           <div class="row" style="margin-top: 10px">
             <button class="btn" id="send">Enviar</button>
+            <label class="badge" style="flex: 0 0 auto">
+              <input id="useProxy" type="checkbox" style="width:auto; margin:0" />
+              Usar proxy (CORS)
+            </label>
             <button class="btn secondary" id="loadSample">Carregar exemplo</button>
             <button class="btn secondary" id="copyCmd">Copiar comando</button>
             <button class="btn danger" id="clearApi">Limpar</button>
@@ -291,6 +295,7 @@
       const wsdlOp = document.getElementById("wsdlOp");
       const applyWsdlBtn = document.getElementById("applyWsdl");
       const wsdlStatus = document.getElementById("wsdlStatus");
+      const useProxy = document.getElementById("useProxy");
 
       // Formatter
       const fmtIn = $("fmtIn");
@@ -982,11 +987,41 @@
             ["GET", "HEAD"].includes(m)
               ? undefined
               : (mode.value === "soap" ? (rendered.value || "") : (body.value || ""));
-          const res = await fetch(u, {
-            method: m,
-            headers: h,
-            body: requestBody,
-          });
+
+          // If proxy enabled, call Netlify function proxy.
+          if (useProxy && useProxy.checked) {
+            const proxyRes = await fetch("/api/proxy", {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ url: u, method: m, headers: h, body: requestBody || "" }),
+            });
+            const proxyTxt = await proxyRes.text();
+            const dt = msNow() - start;
+            const parsed = safeJsonParse(proxyTxt);
+            if (!parsed.ok) {
+              resp.value = proxyTxt;
+              setChips(respChips, [chip("Proxy: resposta inválida", "bad"), chip(`${Math.round(dt)}ms`, "muted")]);
+              respNote.textContent = "O proxy respondeu algo inesperado.";
+              return;
+            }
+            if (!parsed.value.ok) {
+              resp.value = JSON.stringify(parsed.value, null, 2);
+              setChips(respChips, [chip("Proxy: erro", "bad"), chip(`${Math.round(dt)}ms`, "muted")]);
+              respNote.textContent = parsed.value.error || "Falha no proxy.";
+              return;
+            }
+            const r = parsed.value.response;
+            resp.value = r.body || "";
+            setChips(respChips, [
+              chip(`HTTP ${r.status}`, r.ok ? "ok" : "bad"),
+              chip(`${Math.round(dt)}ms`, "muted"),
+              chip("via proxy", "muted"),
+            ]);
+            if (!r.ok) respNote.textContent = "Resposta com erro HTTP (via proxy).";
+            return;
+          }
+
+          const res = await fetch(u, { method: m, headers: h, body: requestBody });
           const txt = await res.text();
           const dt = msNow() - start;
           resp.value = txt;
@@ -996,7 +1031,7 @@
           resp.value = "";
           setChips(respChips, [chip("Falha de rede/CORS", "bad")]);
           respNote.textContent =
-            "O navegador bloqueou (CORS) ou não foi possível conectar. Use o cURL acima (ele funciona fora do navegador).";
+            "O navegador bloqueou (CORS) ou não foi possível conectar. Marque 'Usar proxy (CORS)' (no site publicado) ou use o comando PowerShell/cURL.";
         }
       }
 
