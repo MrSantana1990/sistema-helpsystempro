@@ -139,6 +139,30 @@
             </div>
           </div>
 
+          <div id="wsdlWrap" class="card" style="margin: 12px 0 0; display: none">
+            <h2 style="margin-bottom: 6px">WSDL (opcional)</h2>
+            <p class="muted" style="margin: 0 0 10px">
+              Cole o WSDL para detectar endpoint/operations e gerar um XML base automaticamente.
+            </p>
+            <textarea id="wsdl" class="mono" placeholder="Cole o WSDL (XML) aqui..."></textarea>
+            <div class="row" style="margin-top: 10px">
+              <button class="btn secondary" id="analyzeWsdl">Analisar WSDL</button>
+              <button class="btn secondary" id="clearWsdl">Limpar</button>
+            </div>
+            <div class="kv" style="margin-top: 10px">
+              <div style="grid-column: 1 / -1">
+                <label>Operação</label>
+                <select id="wsdlOp" disabled></select>
+              </div>
+              <div>
+                <button class="btn" id="applyWsdl" disabled>Aplicar</button>
+              </div>
+              <div>
+                <div id="wsdlStatus" class="footer"></div>
+              </div>
+            </div>
+          </div>
+
           <div id="soapVarsWrap" class="card" style="margin: 12px 0 0; display: none">
             <h2 style="margin-bottom: 6px">Campos do XML ({{chave}})</h2>
             <p class="muted" style="margin: 0 0 10px">
@@ -260,6 +284,13 @@
       const soapVars = document.getElementById("soapVars");
       const rendered = document.getElementById("rendered");
       const copyRenderedBtn = document.getElementById("copyRendered");
+      const wsdlWrap = document.getElementById("wsdlWrap");
+      const wsdl = document.getElementById("wsdl");
+      const analyzeWsdlBtn = document.getElementById("analyzeWsdl");
+      const clearWsdlBtn = document.getElementById("clearWsdl");
+      const wsdlOp = document.getElementById("wsdlOp");
+      const applyWsdlBtn = document.getElementById("applyWsdl");
+      const wsdlStatus = document.getElementById("wsdlStatus");
 
       // Formatter
       const fmtIn = $("fmtIn");
@@ -582,6 +613,7 @@
       function syncSoapUi() {
         const isSoap = mode.value === "soap";
         soapVarsWrap.style.display = isSoap ? "block" : "none";
+        wsdlWrap.style.display = isSoap ? "block" : "none";
         if (!isSoap) return;
 
         const vars = extractVars(body.value || "");
@@ -624,6 +656,20 @@
         copyRenderedBtn.disabled = !(rendered.value || "").trim();
       }
 
+      function findHeaderKey(obj, headerName) {
+        const target = String(headerName || "").toLowerCase();
+        for (const k of Object.keys(obj || {})) {
+          if (String(k).toLowerCase() === target) return k;
+        }
+        return null;
+      }
+
+      function ensureHeader(obj, headerName, headerValue) {
+        const key = findHeaderKey(obj, headerName);
+        if (key) return;
+        obj[headerName] = headerValue;
+      }
+
       function updateModeUi() {
         const m = mode.value;
         if (m === "soap") {
@@ -634,7 +680,7 @@
           const headersObj = safeJsonParse(headers.value || "{}");
           if (headersObj.ok) {
             const h = headersObj.value || {};
-            if (!h["content-type"]) h["content-type"] = "text/xml; charset=utf-8";
+            ensureHeader(h, "content-type", "text/xml; charset=utf-8");
             headers.value = JSON.stringify(h, null, 2);
           }
           const cur = (body.value || "").trim();
@@ -659,6 +705,194 @@
         syncSoapUi();
         buildCommand();
       }
+
+      // WSDL (best-effort): detect operations + soapAction + endpoint and generate a base envelope
+      const wsdlState = { ops: [] };
+
+      function wsdlSetStatus(text, kind = "") {
+        wsdlStatus.textContent = text || "";
+        wsdlStatus.className = "footer " + kind;
+      }
+
+      function getFirstByLocalName(root, localName) {
+        const list = root.getElementsByTagNameNS("*", localName);
+        return list && list.length ? list[0] : null;
+      }
+
+      function getAllByLocalName(root, localName) {
+        return Array.from(root.getElementsByTagNameNS("*", localName) || []);
+      }
+
+      function parseWsdl(xmlText) {
+        const parsed = tryParseXml(xmlText);
+        if (!parsed.ok) throw parsed.error;
+        const doc = parsed.value;
+
+        const defs = getFirstByLocalName(doc, "definitions") || doc.documentElement;
+        const targetNamespace = (defs && defs.getAttribute("targetNamespace")) || "";
+
+        let endpoint = "";
+        for (const addr of getAllByLocalName(doc, "address")) {
+          const loc = addr.getAttribute("location");
+          if (loc) {
+            endpoint = loc;
+            break;
+          }
+        }
+
+        const soapVersion = getAllByLocalName(doc, "binding").some((b) => String(b.namespaceURI || "").includes("soap12"))
+          || getAllByLocalName(doc, "address").some((a) => String(a.namespaceURI || "").includes("soap12"))
+          ? "1.2"
+          : "1.1";
+
+        // Map operation -> soapAction (from binding operations)
+        const actionByName = new Map();
+        for (const binding of getAllByLocalName(doc, "binding")) {
+          for (const op of Array.from(binding.children || [])) {
+            if ((op.localName || "").toLowerCase() !== "operation") continue;
+            const name = op.getAttribute("name");
+            if (!name) continue;
+            let soapAction = "";
+            const all = op.getElementsByTagNameNS("*", "operation");
+            for (const el of Array.from(all || [])) {
+              const a = el.getAttribute("soapAction") || el.getAttribute("soapActionURI");
+              if (a) {
+                soapAction = a;
+                break;
+              }
+            }
+            if (soapAction) actionByName.set(name, soapAction);
+          }
+        }
+
+        // Operations list from portType (preferred), fallback to binding operations
+        const names = new Set();
+        for (const pt of getAllByLocalName(doc, "portType")) {
+          for (const op of Array.from(pt.children || [])) {
+            if ((op.localName || "").toLowerCase() !== "operation") continue;
+            const name = op.getAttribute("name");
+            if (name) names.add(name);
+          }
+        }
+        if (names.size === 0) {
+          for (const binding of getAllByLocalName(doc, "binding")) {
+            for (const op of Array.from(binding.children || [])) {
+              if ((op.localName || "").toLowerCase() !== "operation") continue;
+              const name = op.getAttribute("name");
+              if (name) names.add(name);
+            }
+          }
+        }
+
+        const ops = Array.from(names)
+          .sort((a, b) => a.localeCompare(b))
+          .map((name) => ({
+            name,
+            soapAction: actionByName.get(name) || "",
+            endpoint,
+            targetNamespace,
+            soapVersion,
+          }));
+
+        return { ops };
+      }
+
+      function makeSoapEnvelope(op) {
+        const ns = op.targetNamespace ? ` xmlns="${op.targetNamespace}"` : "";
+        const inner =
+          `<${op.name}${ns}>\n` +
+          `  <!-- preencha os campos aqui -->\n` +
+          `</${op.name}>`;
+
+        if (op.soapVersion === "1.2") {
+          return (
+            `<?xml version="1.0" encoding="utf-8"?>\n` +
+            `<soap12:Envelope xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">\n` +
+            `  <soap12:Body>\n` +
+            `    ${inner.replace(/\n/g, "\n    ")}\n` +
+            `  </soap12:Body>\n` +
+            `</soap12:Envelope>\n`
+          );
+        }
+        return (
+          `<?xml version="1.0" encoding="utf-8"?>\n` +
+          `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\n` +
+          `  <soap:Body>\n` +
+          `    ${inner.replace(/\n/g, "\n    ")}\n` +
+          `  </soap:Body>\n` +
+          `</soap:Envelope>\n`
+        );
+      }
+
+      function applyWsdlOp(op) {
+        if (op.endpoint) url.value = op.endpoint;
+        method.value = "POST";
+        bodyLabel.textContent = "Body (XML)";
+        body.value = makeSoapEnvelope(op);
+
+        let h = {};
+        const parsed = safeJsonParse(headers.value || "{}");
+        if (parsed.ok) h = parsed.value || {};
+
+        if (op.soapVersion === "1.2") {
+          ensureHeader(h, "content-type", "application/soap+xml; charset=utf-8");
+        } else {
+          ensureHeader(h, "content-type", "text/xml; charset=utf-8");
+          if (op.soapAction) ensureHeader(h, "SOAPAction", op.soapAction);
+        }
+        headers.value = JSON.stringify(h, null, 2);
+
+        syncSoapUi();
+        buildCommand();
+      }
+
+      function refreshWsdlUi() {
+        wsdlOp.innerHTML = "";
+        if (!wsdlState.ops.length) {
+          wsdlOp.disabled = true;
+          applyWsdlBtn.disabled = true;
+          const opt = document.createElement("option");
+          opt.textContent = "Nenhuma operação";
+          wsdlOp.appendChild(opt);
+          return;
+        }
+        wsdlOp.disabled = false;
+        applyWsdlBtn.disabled = false;
+        for (const op of wsdlState.ops) {
+          const opt = document.createElement("option");
+          opt.value = op.name;
+          opt.textContent = op.soapAction ? `${op.name} (SOAPAction: ${op.soapAction})` : op.name;
+          wsdlOp.appendChild(opt);
+        }
+      }
+
+      analyzeWsdlBtn.addEventListener("click", () => {
+        try {
+          const r = parseWsdl(wsdl.value || "");
+          wsdlState.ops = r.ops;
+          refreshWsdlUi();
+          wsdlSetStatus(`OK: ${r.ops.length} operação(ões) detectada(s).`, "ok");
+        } catch (e) {
+          wsdlState.ops = [];
+          refreshWsdlUi();
+          wsdlSetStatus("Erro: " + e.message, "bad");
+        }
+      });
+
+      clearWsdlBtn.addEventListener("click", () => {
+        wsdl.value = "";
+        wsdlState.ops = [];
+        refreshWsdlUi();
+        wsdlSetStatus("");
+      });
+
+      applyWsdlBtn.addEventListener("click", () => {
+        const name = wsdlOp.value;
+        const op = wsdlState.ops.find((o) => o.name === name);
+        if (!op) return;
+        applyWsdlOp(op);
+        wsdlSetStatus(`Aplicado: ${op.name}`, "ok");
+      });
 
       function normalizeHeaders() {
         const parsed = safeJsonParse(headers.value || "{}");
