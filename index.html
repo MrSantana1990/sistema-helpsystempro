@@ -42,15 +42,21 @@
           style.id = "hsp-promo-style";
           style.textContent =
             [
-              '[data-hsp-bot="1"]{',
+              '[data-hsp-bot="1"], .hsp-bot-cta{',
               "  position:relative;",
               "  border-color:rgba(255,214,102,.70)!important;",
               "  background:linear-gradient(135deg, rgba(255,214,102,.95), rgba(255,235,180,.85))!important;",
               "  color:rgba(12,16,28,.95)!important;",
-              "  box-shadow:0 0 0 1px rgba(255,214,102,.25) inset, 0 0 18px rgba(255,214,102,.20);",
-              "  animation:hspBotGlow 1.35s ease-in-out infinite;",
+              "  box-shadow:0 0 0 1px rgba(255,214,102,.25) inset, 0 0 18px rgba(255,214,102,.20)!important;",
+              "  animation:hspBotGlow 1.35s ease-in-out infinite!important;",
+              "  cursor:pointer!important;",
+              "  transition:transform .12s ease, box-shadow .2s ease, filter .2s ease;",
+              "  will-change:transform,box-shadow,filter;",
               "}",
-              '[data-hsp-bot="1"] svg{opacity:.95}',
+              '[data-hsp-bot="1"] > *, .hsp-bot-cta > *{background:inherit!important;border-color:inherit!important;color:inherit!important;border-radius:inherit!important}',
+              '[data-hsp-bot="1"] svg, .hsp-bot-cta svg{opacity:.95}',
+              '[data-hsp-bot="1"]:hover, .hsp-bot-cta:hover{filter:saturate(1.06);box-shadow:0 0 0 1px rgba(255,214,102,.30) inset, 0 0 32px rgba(255,214,102,.35)!important}',
+              '[data-hsp-bot="1"]:active, .hsp-bot-cta:active{transform:translateY(1px) scale(.99)}',
               '[data-hsp-bot="1"]::after{',
               '  content:"NOVO";',
               "  display:inline-flex;align-items:center;justify-content:center;",
@@ -64,7 +70,7 @@
               "  50%{box-shadow:0 0 0 1px rgba(255,214,102,.30) inset, 0 0 26px rgba(255,214,102,.35);}",
               "}",
               "@media (prefers-reduced-motion: reduce){",
-              '  [data-hsp-bot="1"]{animation:none}',
+              '  [data-hsp-bot="1"], .hsp-bot-cta{animation:none}',
               "}",
               "",
               ".hsp-promo-toast{",
@@ -116,7 +122,7 @@
             wrap.setAttribute("role", "status");
             wrap.innerHTML =
               "<strong>Novo: Bot + Ferramentas</strong>" +
-              "<p>Ganhe tempo com utilitÃ¡rios rÃ¡pidos (JSON/XML, API/SOAP, Meu IP, Velocidade) e veja a landing do Bot.</p>" +
+              "<p>Ganhe tempo com utilitarios rapidos (JSON/XML, API/SOAP, Meu IP, Velocidade) e veja a landing do Bot.</p>" +
               '<div class="row">' +
               '<a href="/tools/" target="_self" rel="noopener">Abrir Ferramentas</a>' +
               '<a href="/bot/" target="_self" rel="noopener">Ver Bot</a>' +
@@ -239,6 +245,7 @@
             el.setAttribute("data-hsp-bot", "1");
             el.setAttribute("aria-label", BOT_LABEL);
             el.setAttribute("title", "Novo: landing do Bot");
+            if (el.classList) el.classList.add("hsp-bot-cta");
 
             replaceTextNode(el, template.textContent, BOT_LABEL);
             if (norm(el.textContent) !== norm(BOT_LABEL)) {
