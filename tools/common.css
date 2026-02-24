@@ -58,6 +58,28 @@ a{color:inherit}
   text-decoration:none;color:var(--text);
 }
 .pill:hover{border-color:rgba(0,229,255,.35)}
+.pill.promo{
+  position:relative;
+  border-color:rgba(234,179,8,.55);
+  background:linear-gradient(135deg, rgba(234,179,8,.35), rgba(124,58,237,.10));
+  box-shadow:0 0 0 1px rgba(234,179,8,.15) inset, 0 0 18px rgba(234,179,8,.14);
+  animation:hspPillGlow 1.35s ease-in-out infinite;
+}
+.pill.promo::after{
+  content:"NOVO";
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-left:8px;padding:2px 8px;border-radius:999px;
+  font-size:10px;letter-spacing:.6px;font-weight:700;
+  background:rgba(0,0,0,.22);color:rgba(255,255,255,.95);
+  border:1px solid rgba(0,0,0,.18);
+}
+@keyframes hspPillGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(234,179,8,.15) inset, 0 0 12px rgba(234,179,8,.12)}
+  50%{box-shadow:0 0 0 1px rgba(234,179,8,.22) inset, 0 0 26px rgba(234,179,8,.26)}
+}
+@media (prefers-reduced-motion: reduce){
+  .pill.promo{animation:none}
+}
 .title{margin:0;font-size:26px;line-height:1.1}
 .subtitle{margin:0;color:var(--muted)}
 

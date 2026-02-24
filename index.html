@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -35,6 +35,103 @@
           'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
           '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>' +
           "</svg>";
+
+        function ensurePromoStyles() {
+          if (document.getElementById("hsp-promo-style")) return;
+          const style = document.createElement("style");
+          style.id = "hsp-promo-style";
+          style.textContent =
+            [
+              '[data-hsp-bot="1"]{',
+              "  position:relative;",
+              "  border-color:rgba(255,214,102,.70)!important;",
+              "  background:linear-gradient(135deg, rgba(255,214,102,.95), rgba(255,235,180,.85))!important;",
+              "  color:rgba(12,16,28,.95)!important;",
+              "  box-shadow:0 0 0 1px rgba(255,214,102,.25) inset, 0 0 18px rgba(255,214,102,.20);",
+              "  animation:hspBotGlow 1.35s ease-in-out infinite;",
+              "}",
+              '[data-hsp-bot="1"] svg{opacity:.95}',
+              '[data-hsp-bot="1"]::after{',
+              '  content:"NOVO";',
+              "  display:inline-flex;align-items:center;justify-content:center;",
+              "  margin-left:8px;padding:2px 8px;border-radius:999px;",
+              "  font-size:10px;letter-spacing:.6px;font-weight:700;",
+              "  background:rgba(0,0,0,.22);color:rgba(255,255,255,.95);",
+              "  border:1px solid rgba(0,0,0,.18);",
+              "}",
+              "@keyframes hspBotGlow{",
+              "  0%,100%{box-shadow:0 0 0 1px rgba(255,214,102,.25) inset, 0 0 12px rgba(255,214,102,.18);}",
+              "  50%{box-shadow:0 0 0 1px rgba(255,214,102,.30) inset, 0 0 26px rgba(255,214,102,.35);}",
+              "}",
+              "@media (prefers-reduced-motion: reduce){",
+              '  [data-hsp-bot="1"]{animation:none}',
+              "}",
+              "",
+              ".hsp-promo-toast{",
+              "  position:fixed;right:16px;bottom:16px;z-index:99999;",
+              "  max-width:340px;",
+              "  border-radius:16px;",
+              "  background:rgba(8,10,16,.72);",
+              "  border:1px solid rgba(255,214,102,.35);",
+              "  box-shadow:0 18px 55px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.25) inset;",
+              "  backdrop-filter: blur(10px);",
+              "  -webkit-backdrop-filter: blur(10px);",
+              "  color:rgba(255,255,255,.92);",
+              "  padding:12px 12px 10px;",
+              "  font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;",
+              "}",
+              ".hsp-promo-toast strong{display:block;margin:0 0 6px}",
+              ".hsp-promo-toast p{margin:0 0 10px;color:rgba(255,255,255,.75);font-size:12px;line-height:1.35}",
+              ".hsp-promo-toast .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}",
+              ".hsp-promo-toast a{",
+              "  text-decoration:none;",
+              "  display:inline-flex;align-items:center;gap:8px;",
+              "  padding:8px 10px;border-radius:999px;",
+              "  border:1px solid rgba(255,214,102,.35);",
+              "  background:linear-gradient(135deg, rgba(255,214,102,.20), rgba(124,58,237,.10));",
+              "  color:rgba(255,255,255,.92);",
+              "}",
+              ".hsp-promo-toast a:hover{border-color:rgba(255,214,102,.55)}",
+              ".hsp-promo-toast button{",
+              "  appearance:none;",
+              "  border:1px solid rgba(255,255,255,.14);",
+              "  background:rgba(255,255,255,.06);",
+              "  color:rgba(255,255,255,.85);",
+              "  padding:8px 10px;border-radius:999px;cursor:pointer;",
+              "}",
+              ".hsp-promo-toast button:hover{border-color:rgba(255,255,255,.28)}",
+            ].join("\n");
+          document.head.appendChild(style);
+        }
+
+        function injectPromoToast() {
+          try {
+            if (document.querySelector(".hsp-promo-toast")) return;
+            const key = "hsp_promo_dismissed_until";
+            const until = Number(localStorage.getItem(key) || "0");
+            if (until && Date.now() < until) return;
+
+            const wrap = document.createElement("div");
+            wrap.className = "hsp-promo-toast";
+            wrap.setAttribute("role", "status");
+            wrap.innerHTML =
+              "<strong>Novo: Bot + Ferramentas</strong>" +
+              "<p>Ganhe tempo com utilitÃ¡rios rÃ¡pidos (JSON/XML, API/SOAP, Meu IP, Velocidade) e veja a landing do Bot.</p>" +
+              '<div class="row">' +
+              '<a href="/tools/" target="_self" rel="noopener">Abrir Ferramentas</a>' +
+              '<a href="/bot/" target="_self" rel="noopener">Ver Bot</a>' +
+              '<button type="button" aria-label="Fechar">Fechar</button>' +
+              "</div>";
+
+            const btn = wrap.querySelector("button");
+            btn.addEventListener("click", () => {
+              localStorage.setItem(key, String(Date.now() + 7 * 24 * 60 * 60 * 1000));
+              wrap.remove();
+            });
+
+            document.body.appendChild(wrap);
+          } catch {}
+        }
 
         function norm(text) {
           return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -141,6 +238,7 @@
             const el = template.cloneNode(true);
             el.setAttribute("data-hsp-bot", "1");
             el.setAttribute("aria-label", BOT_LABEL);
+            el.setAttribute("title", "Novo: landing do Bot");
 
             replaceTextNode(el, template.textContent, BOT_LABEL);
             if (norm(el.textContent) !== norm(BOT_LABEL)) {
@@ -176,6 +274,8 @@
 
         function boot() {
           // tenta agora e também observa re-render do React
+          ensurePromoStyles();
+          injectPromoToast();
           inject();
           const obs = new MutationObserver(() => inject());
           obs.observe(document.documentElement, { childList: true, subtree: true });
