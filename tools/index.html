@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
           />
           <div>
             <strong>HelpSystem Pro</strong><br />
-            <span class="muted">Ferramentas (simples e rápidas)</span>
+            <span class="muted">Ferramentas (simples e rÃ¡pidas)</span>
           </div>
         </a>
         <div class="nav">
@@ -67,7 +67,7 @@
           <div class="card">
             <h2>Formatador (JSON / XML)</h2>
             <p class="muted" style="margin: 0 0 10px">
-              Cole o conteúdo à esquerda e veja o resultado à direita. (Autodetecta JSON/XML)
+              Cole o conteÃºdo Ã  esquerda e veja o resultado Ã  direita. (Autodetecta JSON/XML)
             </p>
             <div class="tri">
               <div class="card" style="margin:0">
@@ -89,12 +89,12 @@
                 <button class="btn" id="fmtPretty">Formatar</button>
                 <button class="btn secondary" id="fmtMin">Minificar</button>
                 <button class="btn secondary" id="fmtValidate">Validar</button>
-                <button class="btn secondary" id="fmtB64Json">Base64 → JSON</button>
-                <button class="btn secondary" id="copyOut">Copiar saída</button>
+                <button class="btn secondary" id="fmtB64Json">Base64 â†’ JSON</button>
+                <button class="btn secondary" id="copyOut">Copiar saÃ­da</button>
                 <div class="hint">Dica: para SOAP, use na aba API/SOAP.</div>
               </div>
               <div class="card" style="margin:0">
-                <h2 style="margin-bottom:6px">Saída</h2>
+                <h2 style="margin-bottom:6px">SaÃ­da</h2>
                 <textarea id="fmtOut" class="mono" readonly></textarea>
               </div>
             </div>
@@ -105,7 +105,7 @@
           <div class="card">
           <h2>API / SOAP (estilo SoapUI, mas simples)</h2>
           <p class="muted">
-            Cole a URL, headers e o body. Se o navegador bloquear por CORS, você ainda tem o cURL pronto.
+            Cole a URL, headers e o body. Se o navegador bloquear por CORS, vocÃª ainda tem o cURL pronto.
           </p>
 
           <div class="kv">
@@ -117,7 +117,7 @@
               </select>
             </div>
             <div>
-              <label>Método</label>
+              <label>MÃ©todo</label>
               <select id="method">
                 <option>GET</option>
                 <option selected>POST</option>
@@ -154,7 +154,7 @@
                 <button class="btn secondary" id="loadWsdlUrl">Carregar da URL</button>
               </div>
               <div>
-                <div class="hint">Se der CORS, marque “Usar proxy (CORS)”.</div>
+                <div class="hint">Se der CORS, marque â€œUsar proxy (CORS)â€.</div>
               </div>
             </div>
             <textarea id="wsdl" class="mono" placeholder="Cole o WSDL (XML) aqui..."></textarea>
@@ -168,7 +168,7 @@
                 <select id="wsdlEndpoint" disabled></select>
               </div>
               <div style="grid-column: 1 / -1">
-                <label>Operação</label>
+                <label>OperaÃ§Ã£o</label>
                 <select id="wsdlOp" disabled></select>
               </div>
               <div>
@@ -247,9 +247,9 @@
 
         <div class="panel" id="p-speed" role="tabpanel" aria-labelledby="t-speed">
           <div class="card">
-            <h2>Teste de velocidade (rápido)</h2>
+            <h2>Teste de velocidade (rÃ¡pido)</h2>
             <p class="muted">
-              Mede download em stream (sem plugins). O sistema escolhe automaticamente o melhor servidor.
+              Mede download em stream (sem plugins) usando este prÃ³prio site/CDN. Resultado aproximado.
             </p>
             <div class="kpi" id="speedChips"></div>
             <div class="row" style="margin-top: 10px">
@@ -257,7 +257,7 @@
             </div>
             <div id="speedOut" class="footer"></div>
             <div class="footer">
-              Dica: rode 2x e considere o maior valor (a primeira rodada “aquece” a conexão).
+              Dica: rode 2x e considere o maior valor (a primeira rodada â€œaqueceâ€ a conexÃ£o).
             </div>
           </div>
         </div>
@@ -395,7 +395,7 @@
         const p = safeJsonParse(input);
         if (p.ok) return { type: "json", out: JSON.stringify(p.value) };
         const x = tryParseXml(input);
-        if (!x.ok) throw new Error("Não parece JSON nem XML válido.");
+        if (!x.ok) throw new Error("NÃ£o parece JSON nem XML vÃ¡lido.");
         return { type: "xml", out: xmlMinify(input) };
       }
 
@@ -424,20 +424,20 @@
           if (type === "json") {
             const p = safeJsonParse(input);
             if (!p.ok) throw p.error;
-            fmtSetStatus("JSON válido.", "ok");
+            fmtSetStatus("JSON vÃ¡lido.", "ok");
             return;
           }
           if (type === "xml") {
             const p = tryParseXml(input);
             if (!p.ok) throw p.error;
-            fmtSetStatus("XML válido.", "ok");
+            fmtSetStatus("XML vÃ¡lido.", "ok");
             return;
           }
           const pj = safeJsonParse(input);
-          if (pj.ok) return void fmtSetStatus("JSON válido. (auto)", "ok");
+          if (pj.ok) return void fmtSetStatus("JSON vÃ¡lido. (auto)", "ok");
           const px = tryParseXml(input);
-          if (px.ok) return void fmtSetStatus("XML válido. (auto)", "ok");
-          throw new Error("Não parece JSON nem XML válido.");
+          if (px.ok) return void fmtSetStatus("XML vÃ¡lido. (auto)", "ok");
+          throw new Error("NÃ£o parece JSON nem XML vÃ¡lido.");
         } catch (e) {
           fmtSetStatus("Erro: " + e.message, "bad");
         }
@@ -446,9 +446,9 @@
         try {
           const decoded = b64ToUtf8(fmtIn.value || "");
           const p = safeJsonParse(decoded);
-          if (!p.ok) throw new Error("Base64 decodificou, mas não virou JSON.");
+          if (!p.ok) throw new Error("Base64 decodificou, mas nÃ£o virou JSON.");
           fmtOut.value = JSON.stringify(p.value, null, 2);
-          fmtSetStatus("OK: Base64 → JSON.", "ok");
+          fmtSetStatus("OK: Base64 â†’ JSON.", "ok");
         } catch (e) {
           fmtSetStatus("Erro: " + e.message, "bad");
         }
@@ -463,7 +463,7 @@
           fmtIn.value = txt;
           fmtSetStatus("Colado do clipboard.", "ok");
         } catch {
-          fmtSetStatus("Não consegui ler o clipboard (permissão do navegador).", "warn");
+          fmtSetStatus("NÃ£o consegui ler o clipboard (permissÃ£o do navegador).", "warn");
         }
       });
       $("clearFmt").addEventListener("click", () => {
@@ -500,7 +500,7 @@
           if (isProbablyIpv4(ip)) reverseBtn.disabled = false;
           setChips(ipChips, list);
         } catch (e) {
-          setChips(ipChips, [chip("Não foi possível obter o IP.", "bad")]);
+          setChips(ipChips, [chip("NÃ£o foi possÃ­vel obter o IP.", "bad")]);
         }
       }
 
@@ -515,10 +515,10 @@
             { cache: "no-store" },
           );
           const parsed = safeJsonParse(text);
-          if (!parsed.ok) throw new Error("Resposta inválida.");
+          if (!parsed.ok) throw new Error("Resposta invÃ¡lida.");
           const ans = parsed.value.Answer || [];
           const ptr = ans.find((a) => a.type === 12)?.data;
-          reverseOut.textContent = ptr ? `PTR: ${ptr}` : "Sem PTR (ou não encontrado).";
+          reverseOut.textContent = ptr ? `PTR: ${ptr}` : "Sem PTR (ou nÃ£o encontrado).";
         } catch (e) {
           reverseOut.textContent = "Falha ao consultar reverse DNS.";
         }
@@ -532,12 +532,8 @@
 
       const SPEED_DEFAULT_CONN = 4;
       const SPEED_DURATION_MS = 12000;
-      const SPEED_CF_URL = "https://speed.cloudflare.com/__down?bytes=25000000";
-
-      function speedFallbackUrl() {
-        // fallback same-origin (não depende de CORS, mas mede o CDN do próprio site)
-        return "/logo-b3opsqus.png";
-      }
+      // Same-origin (funciona no Netlify e no localhost; nÃ£o depende de CORS)
+      const SPEED_URL = "/tools/speed.bin";
 
       async function streamDownloadOnce(url, abortSignal) {
         const res = await fetch(url, { cache: "no-store", signal: abortSignal });
@@ -564,8 +560,8 @@
         const startedAt = msNow();
         let totalBytes = 0;
         let finished = 0;
-        let base = SPEED_CF_URL;
-        let used = "Cloudflare";
+        let base = SPEED_URL;
+        let used = "Este site";
 
         const tick = setInterval(() => {
           const elapsed = msNow() - startedAt;
@@ -590,17 +586,8 @@
         }
 
         try {
-          // primeiro tenta Cloudflare; se falhar, tenta same-origin (sem opções para o usuário)
-          try {
-            await Promise.all(Array.from({ length: conn }, (_, i) => worker(i)));
-          } catch (e) {
-            // troca alvo e tenta novamente (se ainda houver tempo)
-            base = speedFallbackUrl();
-            used = "Este site";
-            totalBytes = 0;
-            finished = 0;
-            await Promise.all(Array.from({ length: conn }, (_, i) => worker(i)));
-          }
+          // sem opÃ§Ãµes: sempre mede o prÃ³prio CDN/host do site
+          await Promise.all(Array.from({ length: conn }, (_, i) => worker(i)));
         } catch (e) {
           clearInterval(tick);
           clearTimeout(stopTimer);
@@ -620,7 +607,7 @@
           chip(`Dados: ${mb} MB`, "muted"),
           chip(`Tempo: ${(elapsed / 1000).toFixed(1)}s`, "muted"),
         ]);
-        speedOut.textContent = `Concluído (${used}).`;
+        speedOut.textContent = `ConcluÃ­do (${used}).`;
       }
 
       document.getElementById("runSpeed").addEventListener("click", () => speedTest(SPEED_DURATION_MS));
@@ -897,7 +884,7 @@
         } else {
           wsdlEndpoint.disabled = true;
           const opt = document.createElement("option");
-          opt.textContent = "Não detectado";
+          opt.textContent = "NÃ£o detectado";
           wsdlEndpoint.appendChild(opt);
         }
 
@@ -905,7 +892,7 @@
           wsdlOp.disabled = true;
           applyWsdlBtn.disabled = true;
           const opt = document.createElement("option");
-          opt.textContent = "Nenhuma operação";
+          opt.textContent = "Nenhuma operaÃ§Ã£o";
           wsdlOp.appendChild(opt);
           return;
         }
@@ -925,8 +912,8 @@
           wsdlState.ops = r.ops;
           wsdlState.endpoints = r.endpoints || [];
           refreshWsdlUi();
-          const epMsg = wsdlState.endpoints.length ? ` • ${wsdlState.endpoints.length} endpoint(s)` : "";
-          wsdlSetStatus(`OK: ${r.ops.length} operação(ões) detectada(s)${epMsg}.`, "ok");
+          const epMsg = wsdlState.endpoints.length ? ` â€¢ ${wsdlState.endpoints.length} endpoint(s)` : "";
+          wsdlSetStatus(`OK: ${r.ops.length} operaÃ§Ã£o(Ãµes) detectada(s)${epMsg}.`, "ok");
         } catch (e) {
           wsdlState.ops = [];
           wsdlState.endpoints = [];
@@ -963,7 +950,7 @@
         });
         const proxyTxt = await proxyRes.text();
         const parsed = safeJsonParse(proxyTxt);
-        if (!parsed.ok) throw new Error("Proxy: resposta inválida.");
+        if (!parsed.ok) throw new Error("Proxy: resposta invÃ¡lida.");
         if (!parsed.value.ok) throw new Error(parsed.value.error || "Proxy: falha.");
         return String(parsed.value.response?.body || "");
       }
@@ -1000,7 +987,7 @@
 
       function normalizeHeaders() {
         const parsed = safeJsonParse(headers.value || "{}");
-        if (!parsed.ok) throw new Error("Headers inválidos (precisa ser JSON).");
+        if (!parsed.ok) throw new Error("Headers invÃ¡lidos (precisa ser JSON).");
         const obj = parsed.value || {};
         const out = {};
         for (const [k, v] of Object.entries(obj)) out[String(k).toLowerCase()] = String(v);
@@ -1068,7 +1055,7 @@
 
         const u = (url.value || "").trim();
         if (!u) {
-          respNote.textContent = "URL é obrigatória.";
+          respNote.textContent = "URL Ã© obrigatÃ³ria.";
           return;
         }
         let h;
@@ -1102,7 +1089,7 @@
             const parsed = safeJsonParse(proxyTxt);
             if (!parsed.ok) {
               resp.value = proxyTxt;
-              setChips(respChips, [chip("Proxy: resposta inválida", "bad"), chip(`${Math.round(dt)}ms`, "muted")]);
+              setChips(respChips, [chip("Proxy: resposta invÃ¡lida", "bad"), chip(`${Math.round(dt)}ms`, "muted")]);
               respNote.textContent = "O proxy respondeu algo inesperado.";
               return;
             }
@@ -1133,7 +1120,7 @@
           resp.value = "";
           setChips(respChips, [chip("Falha de rede/CORS", "bad")]);
           respNote.textContent =
-            "O navegador bloqueou (CORS) ou não foi possível conectar. Marque 'Usar proxy (CORS)' (no site publicado) ou use o comando PowerShell/cURL.";
+            "O navegador bloqueou (CORS) ou nÃ£o foi possÃ­vel conectar. Marque 'Usar proxy (CORS)' (no site publicado) ou use o comando PowerShell/cURL.";
         }
       }
 
