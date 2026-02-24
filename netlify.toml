@@ -23,6 +23,21 @@
   status = 200
 
 [[redirects]]
+  from = "/bot"
+  to = "/bot/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/bot/"
+  to = "/bot/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/bot/*"
+  to = "/bot/index.html"
+  status = 200
+
+[[redirects]]
   from = "/api/proxy"
   to = "/.netlify/functions/proxy"
   status = 200

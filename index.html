@@ -24,11 +24,17 @@
       (function () {
         const LABELS = ["Home", "Sobre", "Projetos", "Contato"];
         const TOOLS_LABEL = "Ferramentas";
+        const BOT_LABEL = "Bot";
         const TOOLS_SVG =
           '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
           'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
           '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4l-6.6 6.6a2 2 0 1 0 2.8 2.8l6.6-6.6a4 4 0 0 0 5.4-5.4l-2.2 2.2-2.8-2.8z"/>' +
           '</svg>';
+        const BOT_SVG =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
+          'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>' +
+          "</svg>";
 
         function norm(text) {
           return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
@@ -63,8 +69,8 @@
           return null;
         }
 
-        function alreadyInjected(container) {
-          return !!container.querySelector('[data-hsp-tools="1"]');
+        function alreadyInjected(container, attrName) {
+          return !!container.querySelector(`[${attrName}="1"]`);
         }
 
         function replaceTextNode(root, from, to) {
@@ -78,7 +84,11 @@
 
         function inject() {
           const container = findNavContainer();
-          if (!container || alreadyInjected(container)) return false;
+          if (!container) return false;
+
+          const hasTools = alreadyInjected(container, "data-hsp-tools");
+          const hasBot = alreadyInjected(container, "data-hsp-bot");
+          if (hasTools && hasBot) return false;
 
           const candidates = Array.from(container.querySelectorAll("a,button"));
           const template =
@@ -88,6 +98,9 @@
             candidates[0];
           if (!template) return false;
 
+          let any = false;
+
+          if (!hasTools) {
           const el = template.cloneNode(true);
           el.setAttribute("data-hsp-tools", "1");
           el.setAttribute("aria-label", TOOLS_LABEL);
@@ -121,7 +134,44 @@
           });
 
           container.appendChild(el);
-          return true;
+          any = true;
+          }
+
+          if (!hasBot) {
+            const el = template.cloneNode(true);
+            el.setAttribute("data-hsp-bot", "1");
+            el.setAttribute("aria-label", BOT_LABEL);
+
+            replaceTextNode(el, template.textContent, BOT_LABEL);
+            if (norm(el.textContent) !== norm(BOT_LABEL)) {
+              el.textContent = BOT_LABEL;
+            }
+
+            const svg = el.querySelector("svg");
+            if (svg && svg.parentElement) {
+              const cls = svg.getAttribute("class");
+              svg.outerHTML = cls ? BOT_SVG.replace("<svg ", `<svg class="${cls}" `) : BOT_SVG;
+            } else {
+              el.insertAdjacentHTML("afterbegin", BOT_SVG + " ");
+            }
+
+            if (el.tagName === "A") {
+              el.setAttribute("href", "/bot/");
+              el.setAttribute("target", "_self");
+            } else {
+              el.setAttribute("type", "button");
+            }
+
+            el.addEventListener("click", function (e) {
+              e.preventDefault();
+              window.location.assign("/bot/");
+            });
+
+            container.appendChild(el);
+            any = true;
+          }
+
+          return any;
         }
 
         function boot() {
