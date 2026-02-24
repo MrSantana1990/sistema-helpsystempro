@@ -283,11 +283,31 @@
           // tenta agora e também observa re-render do React
           ensurePromoStyles();
           injectPromoToast();
-          inject();
-          const obs = new MutationObserver(() => inject());
+
+          let scheduled = false;
+          function scheduleInject() {
+            if (scheduled) return;
+            scheduled = true;
+            setTimeout(() => {
+              scheduled = false;
+              inject();
+            }, 50);
+          }
+
+          // Primeira tentativa (desktop já renderiza o menu no load; mobile só aparece ao abrir)
+          scheduleInject();
+
+          // Observa a DOM por mais tempo: no mobile o menu pode existir só quando abrir
+          const obs = new MutationObserver(() => scheduleInject());
           obs.observe(document.documentElement, { childList: true, subtree: true });
-          // para de observar depois de um tempo (evita overhead)
-          setTimeout(() => obs.disconnect(), 15000);
+
+          // “Gatilhos” para re-injetar quando o menu abrir depois
+          document.addEventListener("click", scheduleInject, true);
+          document.addEventListener("touchstart", scheduleInject, { passive: true, capture: true });
+          window.addEventListener("resize", scheduleInject, { passive: true });
+
+          // Evita observer infinito (mas bem maior que 15s)
+          setTimeout(() => obs.disconnect(), 5 * 60 * 1000);
         }
 
         if (document.readyState === "loading") {
