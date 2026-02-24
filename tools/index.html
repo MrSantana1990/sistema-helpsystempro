@@ -533,7 +533,7 @@
       const SPEED_DEFAULT_CONN = 4;
       const SPEED_DURATION_MS = 12000;
       // Same-origin (funciona no Netlify e no localhost; nÃ£o depende de CORS)
-      const SPEED_URL = "/tools/speed.bin";
+      const SPEED_URL = "/assets/speed.bin";
 
       async function streamDownloadOnce(url, abortSignal) {
         const res = await fetch(url, { cache: "no-store", signal: abortSignal });
