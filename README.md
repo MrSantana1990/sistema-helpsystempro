@@ -22,6 +22,12 @@ A landing page fica em `/bot/`:
 
 - `https://helpsystempro.netlify.app/bot/`
 
+Arquivos principais da landing:
+
+- `bot/index.html`: estrutura e copy comercial
+- `bot/styles.css`: visual premium (dark fintech)
+- `bot/app.js`: interações (contadores, FAQ, CTA WhatsApp)
+
 Dentro de `/tools/` vocÃª tem abas:
 
 - **Formatar**: formatar/minificar/validar **JSON** e **XML** (Ãºtil para anÃ¡lise e troubleshooting).
@@ -92,4 +98,6 @@ Abra:
 - `index-*.js`, `index-*.css`: bundle do build.
 - `tools/index.html`: sistema de ferramentas (abas).
 - `bot/index.html`: landing page (Bot).
+- `bot/styles.css`: estilos da landing.
+- `bot/app.js`: scripts da landing.
 - `netlify.toml` e `_redirects`: redirects (SPA e rotas de `/tools/`).

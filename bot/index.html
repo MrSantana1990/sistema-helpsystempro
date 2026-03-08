@@ -1,48 +1,322 @@
 <!doctype html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HelpSystem Pro • Binance Bot | Automação inteligente com governança</title>
     <meta
       name="description"
-      content="HelpSystem • Binance Bot — Portal + Bot com decisões explicáveis, discovery com aprovação e travas para operar com governança."
+      content="Automação de cripto 24h com gestão de risco, decisões explicáveis, auditoria exportável e operação com governança."
     />
-    <meta name="theme-color" content="#0B0F1A" />
-    <title>HelpSystem • Binance Bot — Governança, risco e auditoria</title>
+    <meta
+      name="keywords"
+      content="bot binance, automação cripto, gestão de risco, painel trading, auditoria de trades, helpsystem pro"
+    />
+    <meta name="theme-color" content="#060B12" />
 
-    <script>
-      (() => {
-        try {
-          const theme = localStorage.getItem("hs_theme");
-          if (theme === "light") document.documentElement.classList.remove("dark");
-          if (theme === "dark") document.documentElement.classList.add("dark");
-        } catch {}
-      })();
-    </script>
-
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="HelpSystem • Binance Bot — Governança, risco e auditoria" />
+    <meta property="og:title" content="HelpSystem Pro • Binance Bot" />
     <meta
       property="og:description"
-      content="Operação de cripto com disciplina, risco controlado e auditoria. Portal + Bot com decisões explicáveis, discovery com aprovação e travas."
+      content="Plataforma brasileira para operar cripto com inteligência operacional, segurança e auditoria."
     />
     <meta property="og:image" content="/bot/og.svg" />
+    <meta property="og:url" content="https://helpsystempro.netlify.app/bot/" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="HelpSystem • Binance Bot — Governança, risco e auditoria" />
+    <meta name="twitter:title" content="HelpSystem Pro • Binance Bot" />
     <meta
       name="twitter:description"
-      content="Portal + Bot com decisões explicáveis, discovery com aprovação e travas para operar com governança."
+      content="Operação de cripto com disciplina, risco controlado e transparência das decisões."
     />
     <meta name="twitter:image" content="/bot/og.svg" />
 
     <link rel="icon" href="/bot/favicon.svg" type="image/svg+xml" />
-    <script type="module" crossorigin src="/bot/assets/index-BmemTO7_.js"></script>
-    <link rel="stylesheet" crossorigin href="/bot/assets/index-BaRhWwuc.css">
+    <link rel="stylesheet" href="/bot/styles.css" />
   </head>
-  <body class="bg-bg text-text">
-    <div id="root"></div>
+  <body>
+    <div class="bg-effects" aria-hidden="true">
+      <div class="glow glow-gold"></div>
+      <div class="glow glow-cyan"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <header class="header">
+      <a class="brand" href="#inicio">
+        <span class="brand-dot"></span>
+        <span>HelpSystem Pro</span>
+      </a>
+      <nav class="nav">
+        <a href="#produto">Produto</a>
+        <a href="#inteligencia">Inteligência</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-accent" href="#contato">Solicitar implantação</a>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero section">
+        <div class="hero-copy">
+          <span class="chip">Plataforma brasileira • Operação 24h</span>
+          <h1>Automação inteligente para operar criptomoedas com governança.</h1>
+          <p>
+            Enquanto você dorme, o HelpSystem Pro analisa mercado, eventos e risco para apoiar decisões com
+            rastreabilidade total.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-accent" href="#demo">Ver demonstração</a>
+            <a class="btn btn-ghost" href="#como-funciona">Ver como funciona</a>
+          </div>
+          <div class="disclaimer-hero">Não é recomendação financeira • Não há garantia de lucro.</div>
+        </div>
+
+        <article id="demo" class="hero-panel">
+          <div class="panel-head">
+            <strong>Centro de Inteligência Operacional</strong>
+            <span class="status-live">BOT ONLINE</span>
+          </div>
+          <div class="kpis">
+            <div class="kpi">
+              <small>Saldo Total</small>
+              <strong data-count="12430">$0</strong>
+              <span>USDT</span>
+            </div>
+            <div class="kpi">
+              <small>Lucro Hoje</small>
+              <strong data-count="82">+$0</strong>
+              <span>USDT</span>
+            </div>
+            <div class="kpi">
+              <small>Trades</small>
+              <strong data-count="34">0</strong>
+              <span>Executados</span>
+            </div>
+            <div class="kpi">
+              <small>Risco Usado</small>
+              <strong data-count="27">0%</strong>
+              <span>Do limite diário</span>
+            </div>
+          </div>
+          <div class="sparkline">
+            <svg viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(34,211,238,0.35)" />
+                  <stop offset="100%" stop-color="rgba(34,211,238,0.02)" />
+                </linearGradient>
+              </defs>
+              <path d="M0 130 L40 120 L80 122 L120 95 L160 110 L200 92 L240 88 L280 75 L320 70 L360 77 L400 64 L440 60 L480 54 L520 49 L560 43 L600 36 L600 160 L0 160 Z" fill="url(#sparkFill)"></path>
+              <path d="M0 130 L40 120 L80 122 L120 95 L160 110 L200 92 L240 88 L280 75 L320 70 L360 77 L400 64 L440 60 L480 54 L520 49 L560 43 L600 36" fill="none" stroke="#22D3EE" stroke-width="3"></path>
+            </svg>
+          </div>
+        </article>
+      </section>
+
+      <section id="produto" class="section">
+        <div class="section-head">
+          <h2>Por que o HelpSystem Pro converte melhor?</h2>
+          <p>Mais do que automação: disciplina operacional, transparência e proteção de risco.</p>
+        </div>
+        <div class="grid-4">
+          <article class="card">
+            <h3>Decisão explicável</h3>
+            <p>Cada operação registra sinais e motivo de entrada/saída.</p>
+          </article>
+          <article class="card">
+            <h3>Travas de risco</h3>
+            <p>SL/TP, limite diário, máximo por símbolo e kill switch automático.</p>
+          </article>
+          <article class="card">
+            <h3>Discovery com aprovação</h3>
+            <p>Moedas novas só entram com sua governança explícita.</p>
+          </article>
+          <article class="card">
+            <h3>Auditoria exportável</h3>
+            <p>Logs e CSV para conferência técnica, compliance e histórico.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="section">
+        <div class="section-head">
+          <h2>Como funciona na prática</h2>
+          <p>Fluxo guiado para reduzir erro operacional e começar com segurança.</p>
+        </div>
+        <ol class="steps">
+          <li><span>1</span> Conecte sua conta Binance (sem saque na API)</li>
+          <li><span>2</span> Defina limites de risco e perfil operacional</li>
+          <li><span>3</span> Escolha ativos monitorados e estratégia inicial</li>
+          <li><span>4</span> Rode em simulação/testnet para validação</li>
+          <li><span>5</span> Ative operação e monitore decisões em tempo real</li>
+        </ol>
+      </section>
+
+      <section id="inteligencia" class="section intelligence">
+        <div class="section-head">
+          <h2>Inteligência do sistema em tempo real</h2>
+          <p>O modelo combina várias camadas de análise antes de abrir posição.</p>
+        </div>
+        <div class="intelligence-grid">
+          <article class="card decision">
+            <h3>Decisão atual • BTC/USDT</h3>
+            <div class="score"><span>Score técnico</span><b>72%</b><i style="--value:72%"></i></div>
+            <div class="score"><span>Score sentimento</span><b>45%</b><i style="--value:45%"></i></div>
+            <div class="score"><span>Score evento</span><b>81%</b><i style="--value:81%"></i></div>
+            <div class="score"><span>Score liquidez</span><b>63%</b><i style="--value:63%"></i></div>
+            <div class="decision-result">
+              <span>Decisão final</span>
+              <strong>COMPRA</strong>
+              <small>Confiança 67%</small>
+            </div>
+          </article>
+          <article class="card feed">
+            <h3>Feed de inteligência</h3>
+            <ul>
+              <li><b>08:15</b> Volatilidade alta detectada em BTC <span class="tag risk">Risco</span></li>
+              <li><b>09:02</b> Evento regulatório com viés positivo <span class="tag ai">Evento</span></li>
+              <li><b>09:45</b> Operação executada com proteção ativa <span class="tag ok">Execução</span></li>
+              <li><b>11:20</b> Parcial de lucro realizada automaticamente <span class="tag ok">PnL</span></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section security">
+        <div class="section-head">
+          <h2>Segurança e transparência operacional</h2>
+          <p>Arquitetura para operar com controle e sem promessas irreais.</p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Camadas de proteção</h3>
+            <ul class="check-list">
+              <li>API Binance sem permissão de saque</li>
+              <li>Limite diário de perda e de ordens</li>
+              <li>Exposição máxima por ativo</li>
+              <li>Kill switch manual e automático</li>
+              <li>Simulação/testnet antes do modo real</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Compliance obrigatório</h3>
+            <p>Não é recomendação financeira. Não há garantia de lucro. O usuário define limites e é responsável pela gestão de risco da conta.</p>
+            <a class="btn btn-ghost full" href="https://helpsystempro.netlify.app/" target="_blank" rel="noopener">Ver site oficial</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="planos" class="section">
+        <div class="section-head">
+          <h2>Planos para operação no Brasil</h2>
+          <p>Valores de referência, ajustáveis por escopo de implantação e suporte.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Starter</h3>
+            <p class="price">R$ 49<span>/mês</span></p>
+            <ul>
+              <li>1 conta Binance</li>
+              <li>Até 5 moedas</li>
+              <li>Simulação + testnet</li>
+              <li>Painel operacional</li>
+            </ul>
+            <a class="btn btn-ghost full wa-link" href="#">Contratar</a>
+          </article>
+          <article class="price-card featured">
+            <span class="badge">Mais escolhido</span>
+            <h3>Pro</h3>
+            <p class="price">R$ 97<span>/mês</span></p>
+            <ul>
+              <li>Até 15 moedas</li>
+              <li>Notícias + eventos</li>
+              <li>Alertas Telegram</li>
+              <li>Relatórios avançados</li>
+            </ul>
+            <a class="btn btn-accent full wa-link" href="#">Contratar</a>
+          </article>
+          <article class="price-card">
+            <h3>Advanced</h3>
+            <p class="price">R$ 197<span>/mês</span></p>
+            <ul>
+              <li>Todas funcionalidades</li>
+              <li>Prioridade operacional</li>
+              <li>Acompanhamento técnico</li>
+              <li>Suporte estendido</li>
+            </ul>
+            <a class="btn btn-ghost full wa-link" href="#">Contratar</a>
+          </article>
+        </div>
+        <p class="pricing-note">
+          * Preços podem variar conforme implantação, integrações e nível de suporte.
+        </p>
+      </section>
+
+      <section id="faq" class="section">
+        <div class="section-head">
+          <h2>Perguntas frequentes</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Dá lucro garantido?</summary>
+            <p>Não. O sistema não garante lucro. Ele aumenta disciplina e controle operacional.</p>
+          </details>
+          <details>
+            <summary>Posso começar sem operar real?</summary>
+            <p>Sim. O fluxo recomendado é simulação/dry-run e depois testnet antes do modo real.</p>
+          </details>
+          <details>
+            <summary>Como funciona a segurança das chaves?</summary>
+            <p>Use API sem saque, rotacione segredos e aplique 2FA no ecossistema de operação.</p>
+          </details>
+          <details>
+            <summary>Em quanto tempo consigo implantar?</summary>
+            <p>Setup inicial em minutos; operação diária normalmente em poucos minutos por dia.</p>
+          </details>
+        </div>
+      </section>
+
+      <section id="contato" class="section contact">
+        <div class="section-head">
+          <h2>Quer implantar no seu ambiente?</h2>
+          <p>Envie objetivo e receba proposta técnica/comercial no WhatsApp.</p>
+        </div>
+        <form id="lead-form" class="contact-form">
+          <label>
+            Nome
+            <input id="lead-name" type="text" placeholder="Seu nome" required />
+          </label>
+          <label>
+            WhatsApp
+            <input id="lead-phone" type="tel" placeholder="(11) 99999-9999" required />
+          </label>
+          <label>
+            Objetivo
+            <textarea id="lead-goal" rows="4" placeholder="Ex: operar 24h com risco controlado em BTC/ETH" required></textarea>
+          </label>
+          <div class="contact-actions">
+            <button class="btn btn-accent" type="submit">Enviar no WhatsApp</button>
+            <a class="btn btn-ghost" href="https://helpsystempro.netlify.app/" target="_blank" rel="noopener">Portfólio</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© <span id="year"></span> HelpSystem Pro • Todos os direitos reservados.</p>
+      <a href="https://github.com/MrSantana1990" target="_blank" rel="noopener">GitHub</a>
+    </footer>
+
+    <a
+      class="float-wa"
+      href="https://wa.me/5511940025492?text=Quero%20implantar%20o%20HelpSystem%20Pro%20Binance%20Bot.%20Vou%20comecar%20em%20simulacao/testnet."
+      target="_blank"
+      rel="noopener"
+      aria-label="Falar no WhatsApp"
+    >
+      WhatsApp
+    </a>
+
+    <script src="/bot/app.js"></script>
   </body>
 </html>
