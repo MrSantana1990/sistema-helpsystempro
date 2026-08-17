@@ -1,103 +1,82 @@
-﻿# HelpSystem Pro (static)
+<div align="center">
 
-Este repositÃ³rio Ã© o **site no ar** (build estÃ¡tico: HTML/CSS/JS) do HelpSystem Pro + um â€œmini-sistemaâ€ de ferramentas para analistas/DBA/dev.
+# ◈ HelpSystem Pro
 
-Ele foi pensado para:
+### Tecnologia simples por fora. Poderosa por dentro.
 
-- Servir como **site/portfolio** (Home / Sobre / Projetos / Contato).
-- Entregar **ferramentas Ãºteis e rÃ¡pidas** para o dia a dia, num layout simples (sem depender de instalar apps).
-- Hospedar uma **landing page de venda** do Bot em `/bot/`.
+Site oficial, central de produtos e ferramentas técnicas da marca HelpSystem Pro.
 
-> Importante: este repo contÃ©m o **build final**. Se vocÃª quiser mudar componentes do React, pÃ¡ginas, etc, o ideal Ã© ter o **cÃ³digo-fonte** (ex: projeto Vite/React com `src/` e `package.json`). Aqui Ã© o resultado compilado.
+[![Produção](https://img.shields.io/badge/produção-online-22c55e?style=for-the-badge)](https://helpsystempro.site)
+[![HTTPS](https://img.shields.io/badge/HTTPS-Cloudflare-f38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://helpsystempro.site)
+[![Docker](https://img.shields.io/badge/deploy-Docker-2496ed?style=for-the-badge&logo=docker&logoColor=white)](#executar-localmente)
+[![Mobile](https://img.shields.io/badge/interface-responsiva-22d3d3?style=for-the-badge)](#ecossistema)
 
-## Ferramentas (Sistema)
+[Site](https://helpsystempro.site) · [Soluções](https://helpsystempro.site/produtos/) · [Ferramentas](https://helpsystempro.site/tools/) · [Bot](https://bot.helpsystempro.site) · [Crédito](https://credito.helpsystempro.site)
 
-As ferramentas ficam em `/tools/`:
+</div>
 
-- `https://helpsystempro.site/tools/`
+---
 
-## Landing (Bot)
+## ✦ Sobre
 
-A landing page fica em `/bot/`:
+Este repositório contém o **build estático de produção** do portal HelpSystem Pro. Ele apresenta o portfólio, centraliza os produtos e oferece utilitários para analistas, DBAs e desenvolvedores.
 
-- `https://bot.helpsystempro.site/` (também disponível em `https://helpsystempro.site/bot/`)
+> Este é o resultado compilado. Alterações profundas no React devem ser feitas no projeto-fonte e recompiladas.
 
-Arquivos principais da landing:
+## 🧩 Ecossistema
 
-- `bot/index.html`: estrutura e copy comercial
-- `bot/styles.css`: visual premium (dark fintech)
-- `bot/app.js`: interações (contadores, FAQ, CTA WhatsApp)
+| Produto | Finalidade | Acesso |
+|---|---|---|
+| **Central de soluções** | Visão unificada dos produtos | [Abrir](https://helpsystempro.site/produtos/) |
+| **HelpSystemPro Crédito** | Clientes, contratos e recebimentos | [Abrir](https://credito.helpsystempro.site) |
+| **Ferramentas técnicas** | JSON, XML, API, SOAP, IP e rede | [Abrir](https://helpsystempro.site/tools/) |
+| **Automação Binance** | Apresentação do projeto operacional | [Conhecer](https://bot.helpsystempro.site) |
 
-Dentro de `/tools/` vocÃª tem abas:
+## 🧰 Ferramentas
 
-- **Formatar**: formatar/minificar/validar **JSON** e **XML** (Ãºtil para anÃ¡lise e troubleshooting).
-  - Extra: **Base64 â†’ JSON** (cola um Base64 e ele tenta decodificar e mostrar o JSON formatado).
-- **API/SOAP**: um â€œSoapUI/Postman simplesâ€:
-  - VocÃª informa **URL**, **mÃ©todo**, **headers** e **body**.
-  - O sistema monta automaticamente um **comando PowerShell** (recomendado) ou **cURL** para vocÃª rodar fora do navegador.
-  - Para SOAP, aceita placeholders no XML tipo `{{token}}` e cria inputs para preencher.
-- **Meu IP**: mostra o IP pÃºblico e faz reverse DNS (PTR) quando possÃ­vel.
-- **Velocidade**: roda um teste aproximado de download (o sistema escolhe automaticamente um alvo de teste e faz fallback).
+- formatação, validação e minificação de JSON/XML;
+- decodificação de Base64 para JSON;
+- montagem de requisições API/SOAP;
+- geração de comandos PowerShell e cURL;
+- consulta de IP público e reverse DNS;
+- teste aproximado de velocidade.
 
-## Privacidade e seguranÃ§a
+As operações de formatação acontecem no navegador. O proxy de API permanece **negado por padrão** até receber uma allowlist segura.
 
-- As ferramentas rodam **no navegador**.
-- O sistema **nÃ£o salva** seu JSON/XML nem seus requests em servidor.
-- Alguns recursos usam serviÃ§os pÃºblicos (ex: â€œMeu IPâ€ e reverse DNS) para funcionar.
+## 🏗️ Estrutura
 
-### API/SOAP e CORS
+    .
+    ├── index.html          # portal principal
+    ├── produtos/           # central de soluções
+    ├── tools/              # ferramentas técnicas
+    ├── bot/                # landing da automação
+    ├── nginx.conf          # rotas e segurança
+    ├── Dockerfile
+    └── docker-compose.yml
 
-No navegador, muitas APIs (principalmente SOAP/enterprise) bloqueiam chamadas diretas por **CORS**.
+## 🚀 Executar localmente
 
-Por isso o sistema tem duas alternativas:
+    cd D:\DEV\Helpsystem_Pro
+    docker compose up -d --build
 
-- **Copiar comando** (PowerShell/cURL) e executar fora do navegador.
-- **Proxy (Netlify Function)**: quando habilitado na aba API/SOAP, o site chama uma function do Netlify que faz a requisiÃ§Ã£o por vocÃª.
+Acesse http://127.0.0.1:8092.
 
-> SeguranÃ§a: o proxy Ã© **deny-by-default** e precisa de allowlist.
+## 🛡️ Segurança e privacidade
 
-ConfiguraÃ§Ã£o no Netlify (Environment variables):
+- HTTPS e proteção de borda pela Cloudflare;
+- contêiner somente leitura e sem elevação de privilégios;
+- cabeçalhos de segurança no Nginx;
+- nenhuma credencial deve ser adicionada ao repositório;
+- proxy externo com allowlist explícita.
 
-- `PROXY_ALLOWLIST` (obrigatÃ³rio): lista de hosts permitidos (ex: `jsonplaceholder.typicode.com,httpbin.org`)
-- `PROXY_TOKEN` (opcional): se definido, o proxy exige header `x-hsp-proxy-token`
+## 📦 Publicação
 
-No frontend, o token pode ser preenchido no campo **â€œToken (opcional)â€** ao habilitar **â€œUsar proxy (CORS)â€** (ele fica salvo no `localStorage` do navegador).
+O domínio principal roda em Docker na VPS, acessível por Cloudflare Tunnel. A antiga publicação Netlify pode ser mantida apenas como contingência.
 
-## LimitaÃ§Ãµes (normal para web)
+---
 
-- Requests de API podem ser bloqueados por **CORS** no navegador. Por isso existe o botÃ£o de â€œcopiar comandoâ€ (PowerShell/cURL).
-- Teste de velocidade Ã© **aproximado** e varia com a rota/servidor/rede. O resultado tende a ficar mais â€œrealâ€ no site publicado do que em `localhost`.
+<div align="center">
 
-## Rodar localmente (teste rÃ¡pido)
+**HelpSystem Pro** · Soluções digitais com clareza, segurança e propósito.
 
-No PowerShell:
-
-```powershell
-cd D:\DEV\Helpsystem_Pro
-py -m http.server 4173
-```
-
-Abra:
-
-- `http://localhost:4173/`
-- `http://localhost:4173/tools/`
-- `http://localhost:4173/bot/`
-
-## Deploy no Netlify (via GitHub)
-
-1. No Netlify: **Add new site â†’ Import an existing project â†’ GitHub**.
-2. Selecione o repo `sistema-helpsystempro`.
-3. ConfiguraÃ§Ã£o:
-   - **Base directory**: vazio
-   - **Build command**: nenhum (o `netlify.toml` jÃ¡ define â€œno buildâ€)
-   - **Publish directory**: `.`
-
-## Estrutura do repositÃ³rio
-
-- `index.html`: entrada do site (SPA).
-- `index-*.js`, `index-*.css`: bundle do build.
-- `tools/index.html`: sistema de ferramentas (abas).
-- `bot/index.html`: landing page (Bot).
-- `bot/styles.css`: estilos da landing.
-- `bot/app.js`: scripts da landing.
-- `netlify.toml` e `_redirects`: redirects (SPA e rotas de `/tools/`).
+</div>
