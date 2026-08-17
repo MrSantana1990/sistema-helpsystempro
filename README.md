@@ -14,13 +14,13 @@ Ele foi pensado para:
 
 As ferramentas ficam em `/tools/`:
 
-- `https://helpsystempro.netlify.app/tools/`
+- `https://helpsystempro.site/tools/`
 
 ## Landing (Bot)
 
 A landing page fica em `/bot/`:
 
-- `https://helpsystempro.netlify.app/bot/`
+- `https://bot.helpsystempro.site/` (também disponível em `https://helpsystempro.site/bot/`)
 
 Arquivos principais da landing:
 
