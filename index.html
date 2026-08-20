@@ -43,6 +43,13 @@
           style.id = "hsp-promo-style";
           style.textContent =
             [
+              '[data-hsp-solutions="1"]{',
+              "  border:1px solid rgba(0,216,255,.72)!important;",
+              "  color:#7defff!important;",
+              "  background:rgba(0,216,255,.10)!important;",
+              "  box-shadow:0 0 18px rgba(0,216,255,.22), inset 0 0 0 1px rgba(0,216,255,.08)!important;",
+              "}",
+              '[data-hsp-solutions="1"]:hover{background:rgba(0,216,255,.18)!important;box-shadow:0 0 28px rgba(0,216,255,.34)!important}',
               '[data-hsp-bot="1"], .hsp-bot-cta{',
               "  position:relative;",
               "  border-color:rgba(255,214,102,.70)!important;",
@@ -72,6 +79,10 @@
               "}",
               "@media (prefers-reduced-motion: reduce){",
               '  [data-hsp-bot="1"], .hsp-bot-cta{animation:none}',
+              "}",
+              "@media (max-width:640px){",
+              "  #home h1{font-size:13vw!important;line-height:1.05!important;white-space:nowrap}",
+              "  .hsp-promo-toast{display:none!important}",
               "}",
               "",
               ".hsp-promo-toast{",
@@ -301,6 +312,29 @@
           return any;
         }
 
+        function injectSolutionsHeroCta() {
+          if (document.querySelector('[data-hsp-solutions-cta="1"]')) return false;
+          const proposal = findClickableByLabel("Solicitar Proposta");
+          if (!proposal || !proposal.parentElement) return false;
+          const cta = proposal.cloneNode(true);
+          cta.setAttribute("data-hsp-solutions-cta", "1");
+          cta.setAttribute("aria-label", "Ver todas as soluções HelpSystem Pro");
+          replaceTextNode(cta, proposal.textContent, "Ver Soluções");
+          if (norm(cta.textContent) !== norm("Ver Soluções")) cta.textContent = "Ver Soluções";
+          if (cta.tagName === "A") {
+            cta.setAttribute("href", "/produtos/");
+            cta.setAttribute("target", "_self");
+          } else {
+            cta.setAttribute("type", "button");
+          }
+          cta.addEventListener("click", function (event) {
+            event.preventDefault();
+            window.location.assign("/produtos/");
+          });
+          proposal.insertAdjacentElement("afterend", cta);
+          return true;
+        }
+
         function boot() {
           // tenta agora e também observa re-render do React
           ensurePromoStyles();
@@ -313,6 +347,7 @@
             setTimeout(() => {
               scheduled = false;
               inject();
+              injectSolutionsHeroCta();
             }, 50);
           }
 
