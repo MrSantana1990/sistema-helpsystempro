@@ -11,7 +11,7 @@ Site oficial, central de produtos e ferramentas técnicas da marca HelpSystem Pr
 [![Docker](https://img.shields.io/badge/deploy-Docker-2496ed?style=for-the-badge&logo=docker&logoColor=white)](#executar-localmente)
 [![Mobile](https://img.shields.io/badge/interface-responsiva-22d3d3?style=for-the-badge)](#ecossistema)
 
-[Site](https://helpsystempro.site) · [Soluções](https://helpsystempro.site/produtos/) · [Ferramentas](https://helpsystempro.site/tools/) · [Bot](https://bot.helpsystempro.site) · [Crédito](https://credito.helpsystempro.site)
+[Site](https://helpsystempro.site) · [Soluções](https://helpsystempro.site/produtos/) · [Ferramentas](https://helpsystempro.site/tools/) · [Carreira](https://carreira.helpsystempro.site) · [Bot](https://bot.helpsystempro.site) · [Crédito](https://credito.helpsystempro.site)
 
 </div>
 
@@ -29,6 +29,7 @@ Este repositório contém o **build estático de produção** do portal HelpSyst
 |---|---|---|
 | **Central de soluções** | Visão unificada dos produtos | [Abrir](https://helpsystempro.site/produtos/) |
 | **HelpSystemPro Crédito** | Clientes, contratos e recebimentos | [Abrir](https://credito.helpsystempro.site) |
+| **HelpSystem Carreira** | Radar, decisões e acompanhamento profissional | [Abrir](https://carreira.helpsystempro.site) |
 | **Ferramentas técnicas** | JSON, XML, API, SOAP, IP e rede | [Abrir](https://helpsystempro.site/tools/) |
 | **Automação Binance** | Apresentação do projeto operacional | [Conhecer](https://bot.helpsystempro.site) |
 
